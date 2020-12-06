@@ -24,6 +24,7 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
     especialidadesDaSalaNoDia = createEspecialidadesSalaDia(S, D)
 
     popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0)
+    popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0)
     for d in range(0, D):
         popularVariaveis(S, demaisCirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d)
 
@@ -76,7 +77,8 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
     fimCirurgia = t + cirurgia['tc'] -1
     
     ocupado = {
-        "ocupado": False
+        "ocupado": False,
+        "c": cirurgia
     }
     
     for c in Xcstd:
