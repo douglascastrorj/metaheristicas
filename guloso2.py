@@ -3,8 +3,10 @@ import numpy as np
 
 MAX_SLOTS_MEDICO_DIA = 24
 MAX_SLOTS_MEDICO_SEMANA = 100
+T = 46
 
-def gerarSolucaoInicial(cirurgias, S, T, D):
+
+def gerarSolucaoInicial(cirurgias, S, D):
     
     # contar slots usados pelos medicos
     medicSlotMap = createMedicSlotMap(cirurgias)
@@ -16,7 +18,7 @@ def gerarSolucaoInicial(cirurgias, S, T, D):
     Xcstd, yesd, z = createDecisionDict(cirurgias, S, T, D, E)
 
     cirurgiasAtendidas = []
-    tempoSalas = np.zeros(S)
+    tempoSalas = np.zeros((S, D))
 
     especialidadesDaSalaNoDia = createEspecialidadesSalaDia(S, D)
 
@@ -25,44 +27,80 @@ def gerarSolucaoInicial(cirurgias, S, T, D):
         for c in cirurgiasP1:
             cirurgia = cirurgiasP1[c]
 
-            # verifica se cirurgia foi atendida
-            if c in cirurgiasAtendidas:
-                print(f'cirurgia {c} ja foi atendida')
-                continue
-
-            # verifica se cirurgia cabe na sala
-            if(tempoSalas[s] + cirurgia['tc'] + 2 > T):
-                if not (tempoSalas[s] == 0 and cirurgia['tc'] == T):
-                    print(f'cirurgia {c} nao cabe na sala {s} no dia 0')
-                    continue
-            
-            # verifica se medico pode atender cirurgia
-            if medicSlotMap[cirurgia['h']]['slotsDia']  + cirurgia['tc'] > MAX_SLOTS_MEDICO_DIA:
-                print(f'medico {cirurgia["h"]} nao possui slots para realizar cirurgia {c} no dia')
-                continue
-            if medicSlotMap[cirurgia['h']]['slotsSemana']  + cirurgia['tc'] > MAX_SLOTS_MEDICO_SEMANA:
-                print(f'medico {cirurgia["h"]} nao possui slots para realizar cirurgia {c} na semana')
-                continue
-            
-            # verifica se adicionar cirurgia matem bloco fechado
-            if especialidadesDaSalaNoDia[s][0] != 0 and especialidadesDaSalaNoDia[s][0] != cirurgia['e']:
-                print(f'cirurgia de especialidade {cirurgia["e"]} nao pode ser atendida na sala {s} dia 0')
+            podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][0], especialidadesDaSalaNoDia[s][0], medicSlotMap)
+            if podeAdicionar == False:
                 continue
 
             print(f'adicionando cirurgia {c} na sala {s} d 0')
             print( 'cirurgia: ', cirurgia )
-            Xcstd[cirurgia['c']][s][tempoSalas[s]][0] = 1
+            Xcstd[cirurgia['c']][s][tempoSalas[s][0]][0] = 1
 
             # atualizar variaveis de controle
             cirurgiasAtendidas.append(c)
-            if tempoSalas[s] >= 0: 
-                tempoSalas[s] += 3
-            tempoSalas[s] += cirurgia['tc']
+            if tempoSalas[s][0] >= 0: 
+                tempoSalas[s][0] += 3
+            tempoSalas[s][0] += cirurgia['tc']
 
             medicSlotMap[cirurgia['h']]['slotsDia'] += cirurgia['tc']
             medicSlotMap[cirurgia['h']]['slotsSemana'] += cirurgia['tc']
 
             especialidadesDaSalaNoDia[s][0] = cirurgia['e']
 
+    for s in range(0, S):
+        for c in cirurgias:
+            #
+            if c in cirurgiasP1:
+                continue
+
+            for d in range(0, D):
+                cirurgia = cirurgias[c] 
+
+                podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][d], especialidadesDaSalaNoDia[s][d], medicSlotMap)
+                if podeAdicionar == False:
+                    continue
+
+                print(f'adicionando cirurgia {c} na sala {s} d 0')
+                print( 'cirurgia: ', cirurgia )
+                Xcstd[cirurgia['c']][s][tempoSalas[s][d]][d] = 1
+
+                # atualizar variaveis de controle
+                cirurgiasAtendidas.append(c)
+                if tempoSalas[s][d] >= 0: 
+                    tempoSalas[s][d] += 3
+                tempoSalas[s][d] += cirurgia['tc']
+
+                medicSlotMap[cirurgia['h']]['slotsDia'] += cirurgia['tc']
+                medicSlotMap[cirurgia['h']]['slotsSemana'] += cirurgia['tc']
+
+                especialidadesDaSalaNoDia[s][d] = cirurgia['e']
 
     return Xcstd
+
+
+def verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalaS, especialidadesDaSalaNoDia, medicSlotMap):
+    # verifica se cirurgia foi atendida
+    c = cirurgia['c']
+    if c in cirurgiasAtendidas:
+        print(f'cirurgia {c} ja foi atendida')
+        return False
+
+    # verifica se cirurgia cabe na sala
+    if(tempoSalaS + cirurgia['tc'] + 2 > T):
+        if not (tempoSalaS == 0 and cirurgia['tc'] == T):
+            print(f'cirurgia {c} nao cabe na sala no dia 0')
+            return False
+    
+    # verifica se medico pode atender cirurgia
+    if medicSlotMap[cirurgia['h']]['slotsDia']  + cirurgia['tc'] > MAX_SLOTS_MEDICO_DIA:
+        print(f'medico {cirurgia["h"]} nao possui slots para realizar cirurgia {c} no dia')
+        return False
+    if medicSlotMap[cirurgia['h']]['slotsSemana']  + cirurgia['tc'] > MAX_SLOTS_MEDICO_SEMANA:
+        print(f'medico {cirurgia["h"]} nao possui slots para realizar cirurgia {c} na semana')
+        return False
+    
+    # verifica se adicionar cirurgia matem bloco fechado
+    if especialidadesDaSalaNoDia != 0 and especialidadesDaSalaNoDia != cirurgia['e']:
+        print(f'cirurgia de especialidade {cirurgia["e"]} nao pode ser atendida na sala dia 0')
+        return False
+    
+    return True
