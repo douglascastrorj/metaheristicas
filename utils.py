@@ -31,6 +31,32 @@ def createDecisionVar(C, S, T, D, E):
 
     return xcstd, yesd, z
 
+def createDecisionDict(cirurgias, S, T, D, E):
+    x = {}
+    z = {}
+    for i in cirurgias:
+        x[i] = {}
+        for j in range(0, S):
+            x[i][j] = {}
+            for k in range(0, T):
+                x[i][j][k] = {}
+                for l in range(0,D):
+                    x[i][j][k][l] = 0
+    
+    
+        z[i] = 0
+    
+    yesd = {}
+    for i in E:
+        yesd[i] = {}
+        for j in range(0, S):
+            yesd[i][j] = {}
+            for k in range(0, D):
+                yesd[i][j][k] = 0
+
+
+    return x, yesd, z
+
 
 def getSurgeryByPriority(dataset, p):
     surgeries = []
@@ -53,13 +79,25 @@ def getSurgeriesBySpecialty(dataset, e):
     return surgeries
 
 
-def getDistinctSpecialty(dataset):
+def getDistinctSpecialtyArr(dataset):
     especialidadesDistintas = []
     for e in dataset['e']:
         if not e in especialidadesDistintas:
             especialidadesDistintas.append(e)
     
-    return len(especialidadesDistintas)
+    return especialidadesDistintas
+
+def getDistinctSpecialtyArr2(cirurgias):
+    especialidadesDistintas = []
+    for key in cirurgias:
+        e = cirurgias[key]['e']
+        if not e in especialidadesDistintas:
+            especialidadesDistintas.append(e)
+    return especialidadesDistintas
+
+    
+def getDistinctSpecialty(dataset):    
+    return len(getDistinctSpecialtyArr(dataset))
 
 
 def getPenalizacao(prioridade):
@@ -71,6 +109,41 @@ def getPenalizacao(prioridade):
         return 5
     if prioridade == 4:
         return 1
+
+def createMap(dataset):
+    _map = {}
+    for indice in range(0, len(dataset['c'])):
+        idCirurgia = dataset['c'][indice]
+        cirurgia = {
+            "c": idCirurgia,
+            "p": dataset['p'][indice],
+            "w": dataset['w'][indice],
+            "e": dataset['e'][indice],
+            "h": dataset['h'][indice],
+            "tc": dataset['tc'][indice]
+        }
+        _map[idCirurgia] = cirurgia
+    return _map
+
+
+def createMedicSlotMap(cirurgias):
+    medicSlotMap = {}
+    for cirurgiaId in cirurgias:
+        cirurgia = cirurgias[cirurgiaId]
+        
+        medicSlotMap[cirurgia['h']] = {
+            'slotsDia': 0,
+            'slotsSemana': 0
+        }
+
+    return medicSlotMap
+
+def filterBy(_map, column, columnValue):
+    _filtered = {}
+    for key in _map:
+        if _map[key][column] == columnValue:
+            _filtered[key] = _map[key]
+    return _filtered
 
 def getCirurgia(dataset, indice):
     cirurgia = {
@@ -88,3 +161,12 @@ def getIndexFromId(id):
 
 def getIdFromIndex(index):
     return index + 1
+
+def createEspecialidadesSalaDia(S, D):
+    e = []
+    for i in range(0, S):
+        e.append([])
+        for j in range(0, D):
+            e[i].append(0)
+    
+    return np.array(e)
