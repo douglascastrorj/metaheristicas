@@ -1,4 +1,4 @@
-from utils import filterBy, createDecisionDict, getDistinctSpecialtyArr2, createMedicSlotMap, createEspecialidadesSalaDia
+from utils import filterBy, filterNotBy, createDecisionDict, getDistinctSpecialtyArr2, createMedicSlotMap, createEspecialidadesSalaDia
 import numpy as np
 
 MAX_SLOTS_MEDICO_DIA = 24
@@ -13,6 +13,7 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
 
     # preencher d1 de todas as salas com cirurgias prioridade 1
     cirurgiasP1 = filterBy(cirurgias, 'p', 1)
+    demaisCirurgias = filterNotBy(cirurgias, 'p', 1)
 
     E = getDistinctSpecialtyArr2(cirurgias)
     Xcstd, yesd, z = createDecisionDict(cirurgias, S, T, D, E)
@@ -22,79 +23,11 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
 
     especialidadesDaSalaNoDia = createEspecialidadesSalaDia(S, D)
 
-    for s in range(0, S):
-        # TODO: verificar qual Especialidade das cirurgias de P1 seria melhor
-        keys = [*cirurgiasP1]
-        for c in keys:
-            cirurgia = cirurgiasP1[c]
+    popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0)
+    for d in range(0, D):
+        popularVariaveis(S, demaisCirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d)
 
-            podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][0], especialidadesDaSalaNoDia[s][0], medicSlotMap, verbose)
-            if podeAdicionar == False:
-                continue
-            
-            #verificar se cirurgiao esta ocupado
-            ocupadoNoPeriodo = cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, tempoSalas[s][0], 0)
-            if ocupadoNoPeriodo['ocupado']:
-                if verbose:
-                    print(f'cirurgiao {cirurgia["h"]} esta ocupado no periodo {ocupadoNoPeriodo["inicio"]} <-> {ocupadoNoPeriodo["fim"]}')
-                continue
-
-            if verbose:
-                print(f'adicionando cirurgia {c} na sala {s} d 0')
-                print( 'cirurgia: ', cirurgia )
-
-            Xcstd[cirurgia['c']][s][tempoSalas[s][0]][0] = 1
-            yesd[cirurgia['e']][s][0] = 1
-
-            # atualizar variaveis de controle
-            cirurgiasAtendidas.append(c)
-            if tempoSalas[s][0] >= 0: 
-                tempoSalas[s][0] += 2
-            tempoSalas[s][0] += cirurgia['tc']
-
-            medicSlotMap[cirurgia['h']]['slotsDia'] += cirurgia['tc']
-            medicSlotMap[cirurgia['h']]['slotsSemana'] += cirurgia['tc']
-
-            especialidadesDaSalaNoDia[s][0] = cirurgia['e']
-
-    for s in range(0, S):
-        keys = [*cirurgias]
-        for c in cirurgias:
-            #
-            if c in cirurgiasP1:
-                continue
-
-            for d in range(0, D):
-                cirurgia = cirurgias[c] 
-
-                podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][d], especialidadesDaSalaNoDia[s][d], medicSlotMap, verbose)
-                if podeAdicionar == False:
-                    continue
-
-                ocupadoNoPeriodo = cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, tempoSalas[s][0], d)
-                if ocupadoNoPeriodo['ocupado']:
-                    if verbose:
-                        print(f'cirurgiao {cirurgia["h"]} esta ocupado no periodo {ocupadoNoPeriodo["inicio"]} <-> {ocupadoNoPeriodo["fim"]}')
-                    continue
-
-                if verbose:
-                    print(f'adicionando cirurgia {c} na sala {s} d 0')
-                    print( 'cirurgia: ', cirurgia )
-
-                Xcstd[cirurgia['c']][s][tempoSalas[s][d]][d] = 1
-                yesd[cirurgia['e']][s][d] = 1
-
-                # atualizar variaveis de controle
-                cirurgiasAtendidas.append(c)
-                if tempoSalas[s][d] >= 0: 
-                    tempoSalas[s][d] += 3
-                tempoSalas[s][d] += cirurgia['tc']
-
-                medicSlotMap[cirurgia['h']]['slotsDia'] += cirurgia['tc']
-                medicSlotMap[cirurgia['h']]['slotsSemana'] += cirurgia['tc']
-
-                especialidadesDaSalaNoDia[s][d] = cirurgia['e']
-
+    
     #preencher z
     for c in cirurgias:
         if c not in cirurgiasAtendidas:
@@ -158,7 +91,7 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
                     fimCirurgiaCorrente = t_ + cirurgiaCorrente['tc'] -1
 
                     if cirurgia['c'] == 4:
-                        print('\n\n INICIO E FIM CIRURGIA')
+                        # print('\n\n INICIO E FIM CIRURGIA')
                         print(f' {inicioCirurgia} - {fimCirurgia}')
                         print(f' {inicioCirurgiaCorrente} - {fimCirurgiaCorrente}')
 
@@ -171,5 +104,35 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
                         ocupado['fim'] = fimCirurgiaCorrente
                         ocupado['ocupado'] = True
 
-    print('\n\n')
-    return ocupado                   
+    return ocupado
+
+def popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d):
+    for s in range(0, S):
+        # TODO: verificar qual Especialidade das cirurgias de P1 seria melhor
+        keys = [*cirurgias]
+        for c in keys:
+            cirurgia = cirurgias[c]
+
+            podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][d], especialidadesDaSalaNoDia[s][d], medicSlotMap, False)
+            if podeAdicionar == False:
+                continue
+            
+            #verificar se cirurgiao esta ocupado
+            ocupadoNoPeriodo = cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, tempoSalas[s][d], d)
+            if ocupadoNoPeriodo['ocupado']:
+                continue
+
+
+            Xcstd[cirurgia['c']][s][tempoSalas[s][d]][d] = 1
+            yesd[cirurgia['e']][s][d] = 1
+
+            # atualizar variaveis de controle
+            cirurgiasAtendidas.append(c)
+            if tempoSalas[s][d] >= 0: 
+                tempoSalas[s][d] += 2
+            tempoSalas[s][d] += cirurgia['tc']
+
+            medicSlotMap[cirurgia['h']]['slotsDia'] += cirurgia['tc']
+            medicSlotMap[cirurgia['h']]['slotsSemana'] += cirurgia['tc']
+
+            especialidadesDaSalaNoDia[s][d] = cirurgia['e']

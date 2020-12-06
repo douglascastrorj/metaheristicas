@@ -145,6 +145,13 @@ def filterBy(_map, column, columnValue):
             _filtered[key] = _map[key]
     return _filtered
 
+def filterNotBy(_map, column, columnValue):
+    _filtered = {}
+    for key in _map:
+        if _map[key][column] != columnValue:
+            _filtered[key] = _map[key]
+    return _filtered
+
 def getCirurgia(dataset, indice):
     cirurgia = {
         "c": dataset['c'][indice],
