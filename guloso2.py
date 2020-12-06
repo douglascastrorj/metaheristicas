@@ -6,7 +6,7 @@ MAX_SLOTS_MEDICO_SEMANA = 100
 T = 46
 
 
-def gerarSolucaoInicial(cirurgias, S, D):
+def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
     
     # contar slots usados pelos medicos
     medicSlotMap = createMedicSlotMap(cirurgias)
@@ -27,12 +27,14 @@ def gerarSolucaoInicial(cirurgias, S, D):
         for c in cirurgiasP1:
             cirurgia = cirurgiasP1[c]
 
-            podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][0], especialidadesDaSalaNoDia[s][0], medicSlotMap)
+            podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][0], especialidadesDaSalaNoDia[s][0], medicSlotMap, verbose)
             if podeAdicionar == False:
                 continue
 
-            print(f'adicionando cirurgia {c} na sala {s} d 0')
-            print( 'cirurgia: ', cirurgia )
+            if verbose:
+                print(f'adicionando cirurgia {c} na sala {s} d 0')
+                print( 'cirurgia: ', cirurgia )
+
             Xcstd[cirurgia['c']][s][tempoSalas[s][0]][0] = 1
 
             # atualizar variaveis de controle
@@ -55,12 +57,13 @@ def gerarSolucaoInicial(cirurgias, S, D):
             for d in range(0, D):
                 cirurgia = cirurgias[c] 
 
-                podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][d], especialidadesDaSalaNoDia[s][d], medicSlotMap)
+                podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][d], especialidadesDaSalaNoDia[s][d], medicSlotMap, verbose)
                 if podeAdicionar == False:
                     continue
 
-                print(f'adicionando cirurgia {c} na sala {s} d 0')
-                print( 'cirurgia: ', cirurgia )
+                if verbose:
+                    print(f'adicionando cirurgia {c} na sala {s} d 0')
+                    print( 'cirurgia: ', cirurgia )
                 Xcstd[cirurgia['c']][s][tempoSalas[s][d]][d] = 1
 
                 # atualizar variaveis de controle
@@ -77,30 +80,35 @@ def gerarSolucaoInicial(cirurgias, S, D):
     return Xcstd
 
 
-def verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalaS, especialidadesDaSalaNoDia, medicSlotMap):
+def verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalaS, especialidadesDaSalaNoDia, medicSlotMap, verbose):
     # verifica se cirurgia foi atendida
     c = cirurgia['c']
     if c in cirurgiasAtendidas:
-        print(f'cirurgia {c} ja foi atendida')
+        if verbose:
+            print(f'cirurgia {c} ja foi atendida')
         return False
 
     # verifica se cirurgia cabe na sala
     if(tempoSalaS + cirurgia['tc'] + 2 > T):
         if not (tempoSalaS == 0 and cirurgia['tc'] == T):
-            print(f'cirurgia {c} nao cabe na sala no dia 0')
+            if verbose:
+                print(f'cirurgia {c} nao cabe na sala no dia 0')
             return False
     
     # verifica se medico pode atender cirurgia
     if medicSlotMap[cirurgia['h']]['slotsDia']  + cirurgia['tc'] > MAX_SLOTS_MEDICO_DIA:
-        print(f'medico {cirurgia["h"]} nao possui slots para realizar cirurgia {c} no dia')
+        if verbose:
+            print(f'medico {cirurgia["h"]} nao possui slots para realizar cirurgia {c} no dia')
         return False
     if medicSlotMap[cirurgia['h']]['slotsSemana']  + cirurgia['tc'] > MAX_SLOTS_MEDICO_SEMANA:
-        print(f'medico {cirurgia["h"]} nao possui slots para realizar cirurgia {c} na semana')
+        if verbose:
+            print(f'medico {cirurgia["h"]} nao possui slots para realizar cirurgia {c} na semana')
         return False
     
     # verifica se adicionar cirurgia matem bloco fechado
     if especialidadesDaSalaNoDia != 0 and especialidadesDaSalaNoDia != cirurgia['e']:
-        print(f'cirurgia de especialidade {cirurgia["e"]} nao pode ser atendida na sala dia 0')
+        if verbose:
+            print(f'cirurgia de especialidade {cirurgia["e"]} nao pode ser atendida na sala dia 0')
         return False
     
     return True

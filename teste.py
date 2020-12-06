@@ -1,20 +1,14 @@
 from utils import readDataset, createMap, filterBy, getDistinctSpecialtyArr
 from guloso2 import gerarSolucaoInicial
-
-T = 46
-
-dataset = readDataset('toy2.txt')
-
-cirurgias = createMap(dataset)
-
-cirurgiasP1 = filterBy(cirurgias, 'p', 1)
-
-print(cirurgiasP1)
-
+import json
 
 S = 2
+T = 46
 D = 5
 
-solucaoInicial = gerarSolucaoInicial(cirurgias, S, D)
+dataset = readDataset('toy2.txt')
+cirurgias = createMap(dataset)
+
+solucaoInicial = gerarSolucaoInicial(cirurgias, S, D, verbose=True)
 
 print(solucaoInicial)
