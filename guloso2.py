@@ -36,6 +36,7 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
                 print( 'cirurgia: ', cirurgia )
 
             Xcstd[cirurgia['c']][s][tempoSalas[s][0]][0] = 1
+            yesd[cirurgia['e']][s][0] = 1
 
             # atualizar variaveis de controle
             cirurgiasAtendidas.append(c)
@@ -64,7 +65,9 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
                 if verbose:
                     print(f'adicionando cirurgia {c} na sala {s} d 0')
                     print( 'cirurgia: ', cirurgia )
+
                 Xcstd[cirurgia['c']][s][tempoSalas[s][d]][d] = 1
+                yesd[cirurgia['e']][s][d] = 1
 
                 # atualizar variaveis de controle
                 cirurgiasAtendidas.append(c)
@@ -77,7 +80,12 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
 
                 especialidadesDaSalaNoDia[s][d] = cirurgia['e']
 
-    return Xcstd
+    #preencher z
+    for c in cirurgias:
+        if c not in cirurgiasAtendidas:
+            z[c] = 1
+
+    return Xcstd, yesd, z
 
 
 def verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalaS, especialidadesDaSalaNoDia, medicSlotMap, verbose):
