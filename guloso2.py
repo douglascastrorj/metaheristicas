@@ -24,11 +24,19 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
 
     for s in range(0, S):
         # TODO: verificar qual Especialidade das cirurgias de P1 seria melhor
-        for c in cirurgiasP1:
+        keys = [*cirurgiasP1]
+        for c in keys:
             cirurgia = cirurgiasP1[c]
 
             podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][0], especialidadesDaSalaNoDia[s][0], medicSlotMap, verbose)
             if podeAdicionar == False:
+                continue
+            
+            #verificar se cirurgiao esta ocupado
+            ocupadoNoPeriodo = cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, tempoSalas[s][0], 0)
+            if ocupadoNoPeriodo['ocupado']:
+                if verbose:
+                    print(f'cirurgiao {cirurgia["h"]} esta ocupado no periodo {ocupadoNoPeriodo["inicio"]} <-> {ocupadoNoPeriodo["fim"]}')
                 continue
 
             if verbose:
@@ -41,7 +49,7 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
             # atualizar variaveis de controle
             cirurgiasAtendidas.append(c)
             if tempoSalas[s][0] >= 0: 
-                tempoSalas[s][0] += 3
+                tempoSalas[s][0] += 2
             tempoSalas[s][0] += cirurgia['tc']
 
             medicSlotMap[cirurgia['h']]['slotsDia'] += cirurgia['tc']
@@ -50,6 +58,7 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
             especialidadesDaSalaNoDia[s][0] = cirurgia['e']
 
     for s in range(0, S):
+        keys = [*cirurgias]
         for c in cirurgias:
             #
             if c in cirurgiasP1:
@@ -60,6 +69,12 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
 
                 podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][d], especialidadesDaSalaNoDia[s][d], medicSlotMap, verbose)
                 if podeAdicionar == False:
+                    continue
+
+                ocupadoNoPeriodo = cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, tempoSalas[s][0], d)
+                if ocupadoNoPeriodo['ocupado']:
+                    if verbose:
+                        print(f'cirurgiao {cirurgia["h"]} esta ocupado no periodo {ocupadoNoPeriodo["inicio"]} <-> {ocupadoNoPeriodo["fim"]}')
                     continue
 
                 if verbose:
@@ -120,3 +135,41 @@ def verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalaS, especialid
         return False
     
     return True
+
+def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
+    cirurgiao = cirurgia['h']
+
+    inicioCirurgia = t
+    fimCirurgia = t + cirurgia['tc'] -1
+    
+    ocupado = {
+        "ocupado": False
+    }
+    
+    for c in Xcstd:
+        cirurgiaCorrente = cirurgias[c]
+        if cirurgiaCorrente['h'] != cirurgiao:
+            continue
+        
+        for s in Xcstd[c]:
+            for t_ in Xcstd[c][s]:
+                if Xcstd[c][s][t_][d] == 1:
+                    inicioCirurgiaCorrente = t_
+                    fimCirurgiaCorrente = t_ + cirurgiaCorrente['tc'] -1
+
+                    if cirurgia['c'] == 4:
+                        print('\n\n INICIO E FIM CIRURGIA')
+                        print(f' {inicioCirurgia} - {fimCirurgia}')
+                        print(f' {inicioCirurgiaCorrente} - {fimCirurgiaCorrente}')
+
+                    if inicioCirurgia <= inicioCirurgiaCorrente and fimCirurgia >= inicioCirurgiaCorrente:
+                        ocupado['inicio'] = inicioCirurgiaCorrente
+                        ocupado['fim'] = fimCirurgiaCorrente
+                        ocupado['ocupado'] = True
+                    if inicioCirurgiaCorrente <= inicioCirurgia and fimCirurgiaCorrente >= inicioCirurgia:
+                        ocupado['inicio'] = inicioCirurgiaCorrente
+                        ocupado['fim'] = fimCirurgiaCorrente
+                        ocupado['ocupado'] = True
+
+    print('\n\n')
+    return ocupado                   
