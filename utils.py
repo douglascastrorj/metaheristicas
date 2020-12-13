@@ -177,3 +177,10 @@ def createEspecialidadesSalaDia(S, D):
             e[i].append(0)
     
     return np.array(e)
+
+
+def mapToList(map):
+    lista = []
+    for key in map:
+        lista.append(map[key])
+    return lista

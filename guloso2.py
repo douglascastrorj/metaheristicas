@@ -1,9 +1,29 @@
-from utils import filterBy, filterNotBy, createDecisionDict, getDistinctSpecialtyArr2, createMedicSlotMap, createEspecialidadesSalaDia
+from utils import filterBy, filterNotBy, createDecisionDict, getDistinctSpecialtyArr2, createMedicSlotMap, createEspecialidadesSalaDia, mapToList, getPenalizacao
 import numpy as np
+from operator import itemgetter
 
 MAX_SLOTS_MEDICO_DIA = 24
 MAX_SLOTS_MEDICO_SEMANA = 100
 T = 46
+
+
+def getCoeficienteOrdenacao(cirurgia):
+    penalidade = getPenalizacao(cirurgia['p'])
+    diasEspera = cirurgia['w']
+
+    return float(penalidade) / diasEspera
+
+
+def ordenaCirurgias(cirurgias):    
+    for i in range(0, len(cirurgias)):
+        for j in range(0, len(cirurgias)):
+            valor1 = getCoeficienteOrdenacao(cirurgias[i])
+            valor2 = getCoeficienteOrdenacao(cirurgias[j])
+            if valor1 < valor2:
+                swap = cirurgias[j]
+                cirurgias[j] = cirurgias[i]
+                cirurgias[i] = swap
+    return cirurgias
 
 
 def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
@@ -14,6 +34,9 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
     # preencher d1 de todas as salas com cirurgias prioridade 1
     cirurgiasP1 = filterBy(cirurgias, 'p', 1)
     demaisCirurgias = filterNotBy(cirurgias, 'p', 1)
+
+    # print(cirurgiasP1)
+    # print(demaisCirurgias)
 
     E = getDistinctSpecialtyArr2(cirurgias)
     Xcstd, yesd, z = createDecisionDict(cirurgias, S, T, D, E)
@@ -82,6 +105,9 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
     }
     
     for c in Xcstd:
+        if c not in cirurgias:
+            continue
+        
         cirurgiaCorrente = cirurgias[c]
         if cirurgiaCorrente['h'] != cirurgiao:
             continue
@@ -109,12 +135,14 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
     return ocupado
 
 def popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d):
+    
+    #ordenar com base em prioridade e diasEspera
+    cirurgias_ = mapToList(cirurgias)
+    cirurgias_ = ordenaCirurgias(cirurgias_)
+
     for s in range(0, S):
         # TODO: verificar qual Especialidade das cirurgias de P1 seria melhor
-        keys = [*cirurgias]
-        for c in keys:
-            cirurgia = cirurgias[c]
-
+        for cirurgia in cirurgias_:
             podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][d], especialidadesDaSalaNoDia[s][d], medicSlotMap, False)
             if podeAdicionar == False:
                 continue
@@ -129,7 +157,7 @@ def popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidade
             yesd[cirurgia['e']][s][d] = 1
 
             # atualizar variaveis de controle
-            cirurgiasAtendidas.append(c)
+            cirurgiasAtendidas.append(cirurgia['c'])
             if tempoSalas[s][d] >= 0: 
                 tempoSalas[s][d] += 2
             tempoSalas[s][d] += cirurgia['tc']

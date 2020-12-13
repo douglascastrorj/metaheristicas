@@ -6,7 +6,7 @@ S = 2
 T = 46
 D = 5
 
-dataset = readDataset('toy3.txt')
+dataset = readDataset('toy.txt')
 cirurgias = createMap(dataset)
 
 solucaoInicial, yesd, z = gerarSolucaoInicial(cirurgias, S, D, verbose=True)
