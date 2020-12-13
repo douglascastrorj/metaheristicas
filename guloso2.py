@@ -107,7 +107,7 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
     for c in Xcstd:
         if c not in cirurgias:
             continue
-        
+
         cirurgiaCorrente = cirurgias[c]
         if cirurgiaCorrente['h'] != cirurgiao:
             continue
@@ -117,11 +117,6 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
                 if Xcstd[c][s][t_][d] == 1:
                     inicioCirurgiaCorrente = t_
                     fimCirurgiaCorrente = t_ + cirurgiaCorrente['tc'] -1
-
-                    if cirurgia['c'] == 4:
-                        # print('\n\n INICIO E FIM CIRURGIA')
-                        print(f' {inicioCirurgia} - {fimCirurgia}')
-                        print(f' {inicioCirurgiaCorrente} - {fimCirurgiaCorrente}')
 
                     if inicioCirurgia <= inicioCirurgiaCorrente and fimCirurgia >= inicioCirurgiaCorrente:
                         ocupado['inicio'] = inicioCirurgiaCorrente
@@ -152,7 +147,8 @@ def popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidade
             if ocupadoNoPeriodo['ocupado']:
                 continue
 
-
+            # for i in range(int(tempoSalas[s][d]), int( cirurgia['tc'] + tempoSalas[s][d])):
+            #     Xcstd[cirurgia['c']][s][i][d] = 1
             Xcstd[cirurgia['c']][s][tempoSalas[s][d]][d] = 1
             yesd[cirurgia['e']][s][d] = 1
 

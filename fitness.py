@@ -12,7 +12,7 @@ def fitnessFunction( cirurgias, S, T, D, Xcstd, z):
         for s in range(0, S):
             for t in range(0,T):
                 xcst1 = Xcstd[c][s][t][0]
-                fo += -(wc + 3)*xcst1
+                fo += -(wc + 3)*xcst1 * cirurgia['tc']
 
                 # print(fo)
 
@@ -23,7 +23,7 @@ def fitnessFunction( cirurgias, S, T, D, Xcstd, z):
             for t in range(0, T):
                 for d in range(0, D):
                     xcstd = Xcstd[c][s][t][d]
-                    fo += -(wc + 2 + (d + 1))*xcstd # nosso d vai de 0 a 4
+                    fo += -(wc + 2 + (d + 1))*xcstd * cirurgia['tc'] # nosso d vai de 0 a 4
         pc = cirurgia['p']
         Epc = getPenalizacao(pc)
         fo += pc * Epc * z[c]
