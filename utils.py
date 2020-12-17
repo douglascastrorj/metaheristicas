@@ -186,8 +186,8 @@ def mapToList(map):
     return lista
 
 #funciona para xcstd marcando 1 apenas no slot inicial
-def xcstdToList(xcstd, cirurgias):
-    lista = []
+def xcstdToMap(xcstd, cirurgias):
+    _map = {}
     for c in xcstd:
         for s in xcstd[c]:
             for t in xcstd[c][s]:
@@ -205,5 +205,5 @@ def xcstdToList(xcstd, cirurgias):
                             "prioridade": cirurgias[c]['p'],
                             "especialidade": cirurgias[c]['e']
                         }
-                        lista.append(cirurgia)
-    return lista
+                        _map[c] = cirurgia
+    return _map
