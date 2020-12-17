@@ -184,3 +184,26 @@ def mapToList(map):
     for key in map:
         lista.append(map[key])
     return lista
+
+#funciona para xcstd marcando 1 apenas no slot inicial
+def xcstdToList(xcstd, cirurgias):
+    lista = []
+    for c in xcstd:
+        for s in xcstd[c]:
+            for t in xcstd[c][s]:
+                for d in xcstd[c][s][t]:
+                    if xcstd[c][s][t][d] == 1:
+                        cirurgia = {
+                            "id": c,
+                            "sala": s,
+                            "horaInicio": t,
+                            "horaFim": t + cirurgias[c]['tc'] - 1,
+                            "dia": d,
+                            "duracao": cirurgias[c]['tc'],
+                            "cirurgiao": cirurgias[c]['h'],
+                            "diasEspera": cirurgias[c]['w'],
+                            "prioridade": cirurgias[c]['p'],
+                            "especialidade": cirurgias[c]['e']
+                        }
+                        lista.append(cirurgia)
+    return lista

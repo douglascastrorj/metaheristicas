@@ -44,10 +44,7 @@ def trocaCirurgiasMesmoDia(Xcstd, cirurgias, d):
     Xcstd[c1c][c2s][c2t][d] = 1
     Xcstd[c2c][c1s][c1t][d] = 1
 
-
-
-
-    print(Xcstd)
+    # print(Xcstd)
 
     return Xcstd
 

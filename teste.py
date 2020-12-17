@@ -1,4 +1,4 @@
-from utils import readDataset, createMap, filterBy, getDistinctSpecialtyArr
+from utils import readDataset, createMap, filterBy, getDistinctSpecialtyArr, xcstdToList
 from guloso2 import gerarSolucaoInicial
 from fitness import fitnessFunction, fitnessFunction2
 from buscaLocal import trocaCirurgiasMesmoDia
@@ -10,17 +10,19 @@ D = 5
 dataset = readDataset('toy.txt')
 cirurgias = createMap(dataset)
 
-solucaoInicial, yesd, z = gerarSolucaoInicial(cirurgias, S, D, verbose=True)
+xcstd, yesd, z = gerarSolucaoInicial(cirurgias, S, D, verbose=True)
 
-print(solucaoInicial)
 
-fo = fitnessFunction(cirurgias, S, T, D, solucaoInicial, z)
-fo2 = fitnessFunction2(cirurgias, S, T, D, solucaoInicial, z)
+fo = fitnessFunction(cirurgias, S, T, D, xcstd, z)
+fo2 = fitnessFunction2(cirurgias, S, T, D, xcstd, z)
 print(f'FO = {fo}')
 print(f'FO2 = {fo2}')
 
-trocaCirurgiasMesmoDia(solucaoInicial, cirurgias, 0)
+trocaCirurgiasMesmoDia(xcstd, cirurgias, 0)
 
+
+solucao = xcstdToList(xcstd, cirurgias)
+print(solucao)
 
 # implementar metodo de busca local
 #   - verificar se solucao é viavel

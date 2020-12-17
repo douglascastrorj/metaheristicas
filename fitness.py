@@ -14,8 +14,6 @@ def fitnessFunction( cirurgias, S, T, D, Xcstd, z):
                 xcst1 = Xcstd[c][s][t][0]
                 fo += (wc + 3)*xcst1 * cirurgia['tc']
 
-                # print(fo)
-
     for c in cirurgiasNaoP1:
         cirurgia = cirurgiasNaoP1[c]
         wc = cirurgia['w']
