@@ -138,6 +138,17 @@ def createMedicSlotMap(cirurgias):
 
     return medicSlotMap
 
+
+# filtrar cirurgias do cirurgiao 2 de sexta-feira
+# filterF = lambda cirurgia : cirurgia['cirurgiao'] == 2 & cirurgia['dia'] == 4
+# cirurgiasC2SextaFeira = _filter(solucao, filterF)
+def _filter(_map, filterFunction):
+    _filtered = {}
+    for key in _map:
+        if filterFunction(_map[key]):
+           _filtered[key] = _map[key] 
+    return _filtered
+
 def filterBy(_map, column, columnValue):
     _filtered = {}
     for key in _map:
@@ -207,3 +218,4 @@ def xcstdToMap(xcstd, cirurgias):
                         }
                         _map[c] = cirurgia
     return _map
+
