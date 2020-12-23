@@ -219,3 +219,10 @@ def xcstdToMap(xcstd, cirurgias):
                         _map[c] = cirurgia
     return _map
 
+def overlap(cirurgia1, cirurgia2):
+    if cirurgia1['horaInicio'] <= cirurgia2['horaInicio'] and cirurgia1['horaFim'] >= cirurgia2['horaInicio']:
+        return True
+    if cirurgia2['horaInicio'] <= cirurgia1['horaInicio'] and cirurgia2['horaFim'] >= cirurgia1['horaInicio']:
+        return True
+    
+    return False

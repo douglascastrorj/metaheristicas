@@ -1,4 +1,85 @@
-from utils import filterBy, filterNotBy, getPenalizacao
+from utils import filterBy, filterNotBy, getPenalizacao, _filter, overlap
+
+MAX_SLOTS_MEDICO_DIA = 24
+MAX_SLOTS_MEDICO_SEMANA = 100
+
+def viavel(solucao, S, T, D):
+    cirurgioes = []
+    especialidades = []
+    for c in solucao:
+        cirurgioes.append(solucao[c]['cirurgiao'])
+        especialidades.append(solucao[c]['especialidade'])
+    
+    cirurgioes = set(cirurgioes)
+    especialidades = set(especialidades)
+
+    # Check if some room has more than one specialty in the same day
+    for d in range(0, D):
+        for s in range(0, S):
+            filterF = lambda cirurgia : cirurgia['sala'] == s and cirurgia['dia'] == d
+            surgeries =  _filter(solucao, filterF)
+            specialties = []
+            for c in surgeries:
+                specialties.append(surgeries[c]['especialidade'])
+
+            if len(set(specialties)) > 1:
+                print(f"Room {s} has more than one specialty at day {d}. Check surgeries: {surgeries}.")
+                return False
+
+    # Check if some surgeon exceeds limit of 24/100 timesteps
+    for day in range(1, D):
+        for cirurgiao in cirurgioes:
+            cirurgiasSemana = filterBy(solucao, 'cirurgiao', cirurgiao)
+            tempoSemana = 0
+            for c in cirurgiasSemana:
+                tempoSemana += cirurgiasSemana[c]['duracao']
+
+            cirurgiasDia = filterBy(cirurgiasSemana, 'dia', day)
+            tempoDia = 0
+            for c in cirurgiasDia:
+                tempoDia += cirurgiasDia[c]['duracao']
+            
+            if(tempoDia > MAX_SLOTS_MEDICO_DIA):
+                print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_DIA} no dia {day}.')
+                return False
+            
+            if(tempoSemana > MAX_SLOTS_MEDICO_SEMANA):
+                print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_SEMANA}.')
+                return False
+
+    # Check if some surgeon has overlapping surgeries
+    for day in range(0, D):
+        for cirurgiao in cirurgioes:
+            cirurgiasSemana = filterBy(solucao, 'cirurgiao', cirurgiao)
+            cirurgiasDia = filterBy(cirurgiasSemana, 'dia', day)
+            for c1 in cirurgiasDia:
+                for c2 in cirurgiasDia:
+                    if c1 == c2:
+                        continue
+
+                    cirurgia1 = cirurgiasDia[c1]
+                    cirurgia2 = cirurgiasDia[c2]
+                    if overlap(cirurgia1, cirurgia2):
+                        print(f'cirurgias {c1} - {c2} do cirurgiao {cirurgiao} colidem')
+                        return False
+                    
+
+
+    # Check if surgeries overlap
+    for day in range(1, D):
+        for s in range(0, S):
+            filterDiaSala = lambda cirurgia : cirurgia['dia'] == d and cirurgia['sala'] == s
+            cirurgiasDiaSala = _filter(solucao, filterDiaSala)
+            for c1 in cirurgiasDiaSala:
+                for c2 in cirurgiasDiaSala:
+                    cirurgia1 = cirurgiasDiaSala[c1]
+                    cirurgia2 = cirurgiasDiaSala[c2]
+                    if overlap(cirurgia1, cirurgia2):
+                        print(f'cirurgias {c1} - {c2} colidem')
+                        return False
+
+    return True
+
 
 
 def FO1(solucao, z):
