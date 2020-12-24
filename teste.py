@@ -1,7 +1,7 @@
 from utils import readDataset, createMap, filterBy, getDistinctSpecialtyArr, xcstdToMap
 from guloso2 import gerarSolucaoInicial
 from fitness import fitnessFunction, fitnessFunction2, FO1, viavel
-from buscaLocal import trocaCirurgiasMesmoDia
+from buscaLocal import trocaCirurgiasMesmoDia, trocaCirurgiasDiasDiferente
 
 S = 2
 T = 46
@@ -29,6 +29,10 @@ fo1 = FO1(solucao, z)
 print(f'FO = {fo1}')
 
 print(f'Solucao Viavel: {viavel(solucao, S, T, D)}')
+
+
+s1 = trocaCirurgiasDiasDiferente(solucao, D)
+print(f'Solucao Viavel: {viavel(s1, S, T, D)}')
 
 # implementar metodo de busca local
 #   - verificar se solucao é viavel
