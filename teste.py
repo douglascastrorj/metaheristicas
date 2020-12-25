@@ -30,9 +30,19 @@ print(f'FO = {fo1}')
 
 print(f'Solucao Viavel: {viavel(solucao, S, T, D)}')
 
+# for i in range(0, 10):
+#     s1 = trocaCirurgiasDiasDiferente({'solucao': solucao, 'D': D})
+#     print('\n\n')
+#     fo1 = FO1(s1, z)
+#     print(f'FO = {fo1}  - Viavel: {viavel(s1, S, T, D)} \n\n')
+#     print(s1)
 
-s1 = trocaCirurgiasDiasDiferente(solucao, D)
-print(f'Solucao Viavel: {viavel(s1, S, T, D)}')
+for i in range(0, 10):
+    s1 = trocaCirurgiasMesmoDia({'solucao': solucao, 'D': D})
+    print('\n\n')
+    fo1 = FO1(s1, z)
+    print(f'FO = {fo1}  - Viavel: {viavel(s1, S, T, D)} \n\n')
+    print(s1)
 
 # implementar metodo de busca local
 #   - verificar se solucao é viavel

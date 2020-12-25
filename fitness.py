@@ -23,7 +23,7 @@ def viavel(solucao, S, T, D):
                 specialties.append(surgeries[c]['especialidade'])
 
             if len(set(specialties)) > 1:
-                print(f"Room {s} has more than one specialty at day {d}. Check surgeries: {surgeries}.")
+                # print(f"Room {s} has more than one specialty at day {d}. Check surgeries: {surgeries}.")
                 return False
 
     # Check if some surgeon exceeds limit of 24/100 timesteps
@@ -40,11 +40,11 @@ def viavel(solucao, S, T, D):
                 tempoDia += cirurgiasDia[c]['duracao']
             
             if(tempoDia > MAX_SLOTS_MEDICO_DIA):
-                print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_DIA} no dia {day}.')
+                # print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_DIA} no dia {day}.')
                 return False
             
             if(tempoSemana > MAX_SLOTS_MEDICO_SEMANA):
-                print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_SEMANA}.')
+                # print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_SEMANA}.')
                 return False
 
     # Check if some surgeon has overlapping surgeries
@@ -60,7 +60,7 @@ def viavel(solucao, S, T, D):
                     cirurgia1 = cirurgiasDia[c1]
                     cirurgia2 = cirurgiasDia[c2]
                     if overlap(cirurgia1, cirurgia2):
-                        print(f'cirurgias {c1} - {c2} do cirurgiao {cirurgiao} colidem')
+                        # print(f'cirurgias {c1} - {c2} do cirurgiao {cirurgiao} colidem')
                         return False
                     
 
@@ -75,7 +75,7 @@ def viavel(solucao, S, T, D):
                     cirurgia1 = cirurgiasDiaSala[c1]
                     cirurgia2 = cirurgiasDiaSala[c2]
                     if overlap(cirurgia1, cirurgia2):
-                        print(f'cirurgias {c1} - {c2} colidem')
+                        # print(f'cirurgias {c1} - {c2} colidem')
                         return False
 
     return True

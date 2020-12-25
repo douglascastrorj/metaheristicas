@@ -226,3 +226,13 @@ def overlap(cirurgia1, cirurgia2):
         return True
     
     return False
+
+
+def ordenaCirurgias(cirurgias, compareF):    
+    for i in range(0, len(cirurgias)):
+        for j in range(0, len(cirurgias)):
+            if compareF(cirurgias[i]) < compareF(cirurgias[j]):
+                swap = cirurgias[j]
+                cirurgias[j] = cirurgias[i]
+                cirurgias[i] = swap
+    return cirurgias
