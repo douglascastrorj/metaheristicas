@@ -92,21 +92,55 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
     
     #sortear cirurgia a ser inserida de forma gulosa com base em um alpha (0 = totalmente aleatorio, 1 = totalmente guloso)
     cirurgias_ = mapToList(params['cirurgias'])
-    compareF = lambda cirurgia : float(getPenalizacao(cirurgia['p'])) /  cirurgia['w']
+    cirurgias_ = [ c for c in cirurgias_ if not c['c'] in solucao ]
+    
+    compareF = lambda cirurgia : float(cirurgia['p']) / (cirurgia['w'] * getPenalizacao(cirurgia['p']))
     cirurgias_ = ordenaCirurgias(cirurgias_, compareF)
-    random.shuffle(cirurgias_)
-    cirurgias_ = cirurgias_[: int(len(cirurgias_) * params['alpha'])]
+    # random.shuffle(cirurgias_)
+    maxPos = max( int(len(cirurgias_) * (1 - params['alpha'])),  1)
+    print(maxPos)
+    cirurgias_ = cirurgias_[: maxPos]
+    
 
+  
     cirurgiaEscolhida = random.choice(cirurgias_)
+    # print(cirurgiaEscolhida)
 
     for d in range(0, params['D']):
         for s in range(0, params['S']):
-            filterF = lambda cirurgia : cirurgia['dia'] == d & cirurgia['sala'] == s
+            filterF = lambda cirurgia : cirurgia['dia'] == d and cirurgia['sala'] == s
             cirurgiasDiaSala = _filter(solucao, filterF)
-            mapToList(cirurgiasDiaSala)
-            getValor = lambda cirurgia : cirurgia['horarioFim']
+            cirurgiasDiaSala = mapToList(cirurgiasDiaSala)
+            getValor = lambda cirurgia : cirurgia['horaFim']
             cirurgiasDiaSala = ordenaCirurgias(cirurgiasDiaSala, getValor)
+            
+            inicio = 0
+            fim =  cirurgiaEscolhida['tc'] - 1
+            if len(cirurgiasDiaSala) > 0:
+                ultimaDoDiaSala = cirurgiasDiaSala[len(cirurgiasDiaSala) - 1]
+                inicio = ultimaDoDiaSala['horaFim'] + 3
+                fim = ultimaDoDiaSala['horaFim'] + 3 + cirurgiaEscolhida['tc'] - 1
 
+            if fim > 45:
+                continue
+
+            cirurgia = {
+                            "id": cirurgiaEscolhida['c'],
+                            "sala": s,
+                            "horaInicio": inicio,
+                            "horaFim": fim,
+                            "dia": d,
+                            "duracao": cirurgiaEscolhida['tc'],
+                            "cirurgiao": cirurgiaEscolhida['h'],
+                            "diasEspera": cirurgiaEscolhida['w'],
+                            "prioridade": cirurgiaEscolhida['p'],
+                            "especialidade": cirurgiaEscolhida['e']
+                        }
+            
+            solucao[cirurgia['id']] = cirurgia
+
+            # print('busca local ', cirurgia)
+            return solucao
             #se puder adicionar cirurgia adiciona e retorna
 
 
