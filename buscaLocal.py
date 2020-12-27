@@ -53,7 +53,7 @@ def trocaCirurgiasDiasDiferente(params):
             cirurgiasD[d] = cd
 
     if len(cirurgiasD.keys()) < 2:
-        print('nao existem cirurgias em dias diferentes')
+        # print('nao existem cirurgias em dias diferentes')
         return solucao
     
     d1 = random.choice(list(cirurgiasD.keys()))
@@ -84,18 +84,18 @@ def trocaCirurgiasDiasDiferente(params):
 def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
     solucao = copy.deepcopy(params['solucao'])
 
-    idsCirurgiasNaoAlocadas = [c for c in params['cirurgias'].keys() if solucao[c]['alocada'] == False]
+    idsCirurgiasNaoAlocadas = [c for c in solucao.keys() if solucao[c]['alocada'] == False]
 
     if len(idsCirurgiasNaoAlocadas) == 0:
         return solucao
     
     #sortear cirurgia a ser inserida de forma gulosa com base em um alpha (0 = totalmente aleatorio, 1 = totalmente guloso)
-    cirurgias_ = mapToList(params['cirurgias'])
-    cirurgias_ = [ c for c in cirurgias_ if c['c'] in idsCirurgiasNaoAlocadas ]
+    cirurgias_ = mapToList(params['solucao'])
+    cirurgias_ = [ c for c in cirurgias_ if c['id'] in idsCirurgiasNaoAlocadas ]
 
     print(cirurgias_)
     
-    compareF = lambda cirurgia : float(cirurgia['p']) / (cirurgia['w'] * getPenalizacao(cirurgia['p']))
+    compareF = lambda cirurgia : float(cirurgia['prioridade']) / (cirurgia['diasEspera'] * getPenalizacao(cirurgia['prioridade']))
     cirurgias_ = ordenaCirurgias(cirurgias_, compareF)
     # random.shuffle(cirurgias_)
     maxPos = max( int(len(cirurgias_) * (1 - params['alpha'])),  1)
@@ -116,26 +116,26 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
             cirurgiasDiaSala = ordenaCirurgias(cirurgiasDiaSala, getValor)
             
             inicio = 0
-            fim =  cirurgiaEscolhida['tc'] - 1
+            fim =  cirurgiaEscolhida['duracao'] - 1
             if len(cirurgiasDiaSala) > 0:
                 ultimaDoDiaSala = cirurgiasDiaSala[len(cirurgiasDiaSala) - 1]
                 inicio = ultimaDoDiaSala['horaFim'] + 3
-                fim = ultimaDoDiaSala['horaFim'] + 3 + cirurgiaEscolhida['tc'] - 1
+                fim = ultimaDoDiaSala['horaFim'] + 3 + cirurgiaEscolhida['duracao'] - 1
 
             if fim > 45:
                 continue
 
             cirurgia = {
-                            "id": cirurgiaEscolhida['c'],
+                            "id": cirurgiaEscolhida['id'],
                             "sala": s,
                             "horaInicio": inicio,
                             "horaFim": fim,
                             "dia": d,
-                            "duracao": cirurgiaEscolhida['tc'],
-                            "cirurgiao": cirurgiaEscolhida['h'],
-                            "diasEspera": cirurgiaEscolhida['w'],
-                            "prioridade": cirurgiaEscolhida['p'],
-                            "especialidade": cirurgiaEscolhida['e'],
+                            "duracao": cirurgiaEscolhida['duracao'],
+                            "cirurgiao": cirurgiaEscolhida['cirurgiao'],
+                            "diasEspera": cirurgiaEscolhida['diasEspera'],
+                            "prioridade": cirurgiaEscolhida['prioridade'],
+                            "especialidade": cirurgiaEscolhida['especialidade'],
                             "alocada": True
                         }
             

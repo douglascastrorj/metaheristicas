@@ -26,7 +26,7 @@ def simulatedAnealing(solucaoInicial, FO, T0=100, SAmax=100, alpha=0.5):
             iterT = iterT + 1
 
             #gerar vizinho
-            s1 = trocaCirurgiasDiasDiferente({'solucao': solucaoCorrente, 'D': D})
+            s1 = buscarVizinho(solucaoCorrente, T, T0)
             delta = FO1(s1) - FO1(solucaoCorrente)
             if viavel(s1, S, T, D):
                 if delta < 0:
@@ -41,3 +41,27 @@ def simulatedAnealing(solucaoInicial, FO, T0=100, SAmax=100, alpha=0.5):
         iterT = 0
         # print(T)
     return bestSolution
+
+
+def buscarVizinho(solucao, T, T0):
+    coef = T/T0 # 0 < coef < 1
+    # inicio do algoritmo
+    # if coef > 0.5:
+    #     return trocaCirurgiasDiasDiferente({'solucao': solucao, 'D': D})
+    # else:
+    #     return trocaCirurgiasDiasDiferente({'solucao': solucao, 'D': D})
+
+    fs = getLocalSearchFunctions(solucao, coef)
+
+    func = random.choice(fs)
+
+    return func['f'](func['params'])
+
+def getLocalSearchFunctions(solucao, coef):
+    fs = [
+        {'f': trocaCirurgiasMesmoDia, 'params': {'solucao': solucao, 'D': D}},
+        {'f': trocaCirurgiasDiasDiferente, 'params': {'solucao': solucao, 'D': D}},
+        {'f': insercaoDeUmaOuMaisCirurgiasDaListaEspera, 'params': {'solucao': solucao, 'D': D, 'S': S, 'alpha': 0.5}}
+    ]
+
+    return fs

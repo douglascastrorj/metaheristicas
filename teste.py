@@ -14,23 +14,21 @@ D = 5
 # dataset = readDataset('toy.txt')
 # cirurgias = createMap(dataset)
 
-for i in range(0, 100):
 
-    cirurgias = gerarInstancia(N=10, H=3, E=5)
+cirurgias = gerarInstancia(N=10, H=3, E=5)
 
-    xcstd, yesd, z = gerarSolucaoInicial(cirurgias, S, D, verbose=True)
+xcstd, yesd, z = gerarSolucaoInicial(cirurgias, S, D, verbose=True)
 
-    solucao = xcstdToMap(xcstd, cirurgias)
-    # print(solucao)
+solucao = xcstdToMap(xcstd, cirurgias)
+# print(solucao)
 
-    # desalocarCirurgia(solucao, 1)
-    # desalocarCirurgia(solucao, 5)
-    # desalocarCirurgia(solucao, 6)
+# desalocarCirurgia(solucao, 1)
+# desalocarCirurgia(solucao, 5)
+# desalocarCirurgia(solucao, 6)
 
-    # print(solucao)
+# print(solucao)
 
-    print(solucao)
-    print(f'FO = {FO1(solucao)}  - Viavel: {viavel(solucao, S, T, D)} \n\n')
+# print(solucao)
 
 # for i in range(0, 10):
 #     s1 = trocaCirurgiasDiasDiferente({'solucao': solucao, 'D': D})
@@ -39,7 +37,8 @@ for i in range(0, 100):
 #     print(f'FO = {fo1}  - Viavel: {viavel(s1, S, T, D)} \n\n')
 #     print(s1)
 
-# best = simulatedAnealing(solucao, FO1, SAmax=100, T0=100, alpha=0.5)
+best = simulatedAnealing(solucao, FO1, SAmax=100, T0=100, alpha=0.5)
 
-# print(f'FO = {FO1(best)}  - Viavel: {viavel(best, S, T, D)} \n\n')
+print(f'\n\n(SOLUCAO INICIAL) FO = {FO1(solucao)}  - Viavel: {viavel(solucao, S, T, D)} \n\n')
+print(f'(MELHOR SOLUCAO) FO = {FO1(best)}  - Viavel: {viavel(best, S, T, D)} \n\n')
 # print(best)
