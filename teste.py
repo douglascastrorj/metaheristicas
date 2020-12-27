@@ -1,31 +1,37 @@
-from utils import readDataset, createMap, filterBy, getDistinctSpecialtyArr, xcstdToMap
+from utils import readDataset, createMap, filterBy, getDistinctSpecialtyArr, xcstdToMap, desalocarCirurgia
 from guloso2 import gerarSolucaoInicial
 from fitness import fitnessFunction, FO1, viavel
 from buscaLocal import trocaCirurgiasMesmoDia, trocaCirurgiasDiasDiferente, insercaoDeUmaOuMaisCirurgiasDaListaEspera
+from metaheuristica import simulatedAnealing
+from instancias import gerarInstancia
 
 S = 2
 T = 46
 D = 5
 
-dataset = readDataset('toy.txt')
-cirurgias = createMap(dataset)
 
-xcstd, yesd, z = gerarSolucaoInicial(cirurgias, S, D, verbose=True)
 
-solucao = xcstdToMap(xcstd, cirurgias)
-print(solucao)
-del solucao[1]
-del solucao[5]
-del solucao[6]
-print(solucao)
+# dataset = readDataset('toy.txt')
+# cirurgias = createMap(dataset)
 
-fo1 = FO1(solucao, z)
-print(f'FO = {fo1}')
+for i in range(0, 100):
 
-print(f'Solucao Viavel: {viavel(solucao, S, T, D)}')
+    cirurgias = gerarInstancia(N=10, H=3, E=5)
 
-s1 = insercaoDeUmaOuMaisCirurgiasDaListaEspera({'alpha': 0, 'cirurgias': cirurgias, 'solucao': solucao, 'D': D, 'S': S})
-print(s1)
+    xcstd, yesd, z = gerarSolucaoInicial(cirurgias, S, D, verbose=True)
+
+    solucao = xcstdToMap(xcstd, cirurgias)
+    # print(solucao)
+
+    # desalocarCirurgia(solucao, 1)
+    # desalocarCirurgia(solucao, 5)
+    # desalocarCirurgia(solucao, 6)
+
+    # print(solucao)
+
+    print(solucao)
+    print(f'FO = {FO1(solucao)}  - Viavel: {viavel(solucao, S, T, D)} \n\n')
+
 # for i in range(0, 10):
 #     s1 = trocaCirurgiasDiasDiferente({'solucao': solucao, 'D': D})
 #     print('\n\n')
@@ -33,3 +39,7 @@ print(s1)
 #     print(f'FO = {fo1}  - Viavel: {viavel(s1, S, T, D)} \n\n')
 #     print(s1)
 
+# best = simulatedAnealing(solucao, FO1, SAmax=100, T0=100, alpha=0.5)
+
+# print(f'FO = {FO1(best)}  - Viavel: {viavel(best, S, T, D)} \n\n')
+# print(best)

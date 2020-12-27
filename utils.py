@@ -152,15 +152,17 @@ def _filter(_map, filterFunction):
 def filterBy(_map, column, columnValue):
     _filtered = {}
     for key in _map:
-        if _map[key][column] == columnValue:
-            _filtered[key] = _map[key]
+        if column in _map[key]:
+            if _map[key][column] == columnValue:
+                _filtered[key] = _map[key]
     return _filtered
 
 def filterNotBy(_map, column, columnValue):
     _filtered = {}
     for key in _map:
-        if _map[key][column] != columnValue:
-            _filtered[key] = _map[key]
+        if column in _map[key]:
+            if _map[key][column] != columnValue:
+                _filtered[key] = _map[key]
     return _filtered
 
 def getCirurgia(dataset, indice):
@@ -214,16 +216,38 @@ def xcstdToMap(xcstd, cirurgias):
                             "cirurgiao": cirurgias[c]['h'],
                             "diasEspera": cirurgias[c]['w'],
                             "prioridade": cirurgias[c]['p'],
-                            "especialidade": cirurgias[c]['e']
+                            "especialidade": cirurgias[c]['e'],
+                            "alocada": True
                         }
                         _map[c] = cirurgia
+
+    for c in cirurgias:
+        if not c in _map:
+            _map[c] = {
+                            "id": c,
+                            "sala": None,
+                            "dia": None,
+                            "duracao": cirurgias[c]['tc'],
+                            "cirurgiao": cirurgias[c]['h'],
+                            "diasEspera": cirurgias[c]['w'],
+                            "prioridade": cirurgias[c]['p'],
+                            "especialidade": cirurgias[c]['e'],
+                            "alocada": False
+                        }
+
     return _map
 
 def overlap(cirurgia1, cirurgia2):
-    if cirurgia1['horaInicio'] <= cirurgia2['horaInicio'] and cirurgia1['horaFim'] >= cirurgia2['horaInicio']:
-        return True
-    if cirurgia2['horaInicio'] <= cirurgia1['horaInicio'] and cirurgia2['horaFim'] >= cirurgia1['horaInicio']:
-        return True
+    if cirurgia1['sala'] == cirurgia2['sala']:
+        if cirurgia1['horaInicio'] <= cirurgia2['horaInicio'] and cirurgia1['horaFim'] >= cirurgia2['horaInicio']:
+            return True
+        if cirurgia2['horaInicio'] <= cirurgia1['horaInicio'] and cirurgia2['horaFim'] >= cirurgia1['horaInicio']:
+            return True
+    else:
+        if cirurgia1['horaInicio'] < cirurgia2['horaInicio'] and cirurgia1['horaFim'] > cirurgia2['horaInicio']:
+            return True
+        if cirurgia2['horaInicio'] < cirurgia1['horaInicio'] and cirurgia2['horaFim'] > cirurgia1['horaInicio']:
+            return True
     
     return False
 
@@ -236,3 +260,10 @@ def ordenaCirurgias(cirurgias, compareF):
                 cirurgias[j] = cirurgias[i]
                 cirurgias[i] = swap
     return cirurgias
+
+def desalocarCirurgia(solucao, cirurgiaId):
+    solucao[cirurgiaId]['alocada'] = False
+    solucao[cirurgiaId]['dia'] = None
+    solucao[cirurgiaId]['sala'] = None
+    del solucao[cirurgiaId]['horaInicio']
+    del solucao[cirurgiaId]['horaFim']

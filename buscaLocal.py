@@ -82,29 +82,30 @@ def trocaCirurgiasDiasDiferente(params):
 
 #inserindo apenas uma por enquanto
 def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
-    solucaoAnterior = copy.deepcopy(params['solucao'])
     solucao = copy.deepcopy(params['solucao'])
 
-    idsCirurgiasNaoAlocadas = [c for c in params['cirurgias'].keys() if not c in solucao]
+    idsCirurgiasNaoAlocadas = [c for c in params['cirurgias'].keys() if solucao[c]['alocada'] == False]
 
     if len(idsCirurgiasNaoAlocadas) == 0:
         return solucao
     
     #sortear cirurgia a ser inserida de forma gulosa com base em um alpha (0 = totalmente aleatorio, 1 = totalmente guloso)
     cirurgias_ = mapToList(params['cirurgias'])
-    cirurgias_ = [ c for c in cirurgias_ if not c['c'] in solucao ]
+    cirurgias_ = [ c for c in cirurgias_ if c['c'] in idsCirurgiasNaoAlocadas ]
+
+    print(cirurgias_)
     
     compareF = lambda cirurgia : float(cirurgia['p']) / (cirurgia['w'] * getPenalizacao(cirurgia['p']))
     cirurgias_ = ordenaCirurgias(cirurgias_, compareF)
     # random.shuffle(cirurgias_)
     maxPos = max( int(len(cirurgias_) * (1 - params['alpha'])),  1)
-    print(maxPos)
+    # print(maxPos)
     cirurgias_ = cirurgias_[: maxPos]
     
-
+    # print(cirurgias_, idsCirurgiasNaoAlocadas)
   
     cirurgiaEscolhida = random.choice(cirurgias_)
-    # print(cirurgiaEscolhida)
+    print('cirurgiaEscolhida ', cirurgiaEscolhida)
 
     for d in range(0, params['D']):
         for s in range(0, params['S']):
@@ -134,7 +135,8 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
                             "cirurgiao": cirurgiaEscolhida['h'],
                             "diasEspera": cirurgiaEscolhida['w'],
                             "prioridade": cirurgiaEscolhida['p'],
-                            "especialidade": cirurgiaEscolhida['e']
+                            "especialidade": cirurgiaEscolhida['e'],
+                            "alocada": True
                         }
             
             solucao[cirurgia['id']] = cirurgia

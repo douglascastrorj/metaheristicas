@@ -14,7 +14,7 @@ D = 5
 # SAmax: numero maximo de iteracoes Metropolis para cadaTemperatura
 # alpha: taxa de resfriamento 0 < alpha < 1
 # T0: temperatura inicial
-def simulatedAnealing(solucaoInicial, T0, SAmax, alpha, FO):
+def simulatedAnealing(solucaoInicial, FO, T0=100, SAmax=100, alpha=0.5):
     
     bestSolution =  copy.deepcopy(solucaoInicial)
     solucaoCorrente =  copy.deepcopy(solucaoInicial)
@@ -27,15 +27,17 @@ def simulatedAnealing(solucaoInicial, T0, SAmax, alpha, FO):
 
             #gerar vizinho
             s1 = trocaCirurgiasDiasDiferente({'solucao': solucaoCorrente, 'D': D})
-            delta = FO1(s1, z) - FO1(solucaoCorrente, z)
-            if delta < 0:
-                solucaoCorrente = s1
-                if FO1(s1, z) < FO1(bestSolution, z):
-                    bestSolution = s1
-            else:
-                x = random.random()
-                if x < e**(-delta/T):
+            delta = FO1(s1) - FO1(solucaoCorrente)
+            if viavel(s1, S, T, D):
+                if delta < 0:
                     solucaoCorrente = s1
+                    if FO1(s1) < FO1(bestSolution):
+                        bestSolution = s1
+                else:
+                    x = random.random()
+                    if x < e**(-delta/T):
+                        solucaoCorrente = s1
         T = T * alpha
         iterT = 0
+        # print(T)
     return bestSolution

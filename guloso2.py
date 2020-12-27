@@ -49,7 +49,7 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
     popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0)
     popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0)
     for d in range(0, D):
-        popularVariaveis(S, demaisCirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d)
+        popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d)
 
     
     #preencher z
@@ -111,7 +111,8 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
         cirurgiaCorrente = cirurgias[c]
         if cirurgiaCorrente['h'] != cirurgiao:
             continue
-        
+        # 0 - 8
+        # 7 -18
         for s in Xcstd[c]:
             for t_ in Xcstd[c][s]:
                 if Xcstd[c][s][t_][d] == 1:
@@ -122,10 +123,14 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
                         ocupado['inicio'] = inicioCirurgiaCorrente
                         ocupado['fim'] = fimCirurgiaCorrente
                         ocupado['ocupado'] = True
+
+                        return ocupado
                     if inicioCirurgiaCorrente <= inicioCirurgia and fimCirurgiaCorrente >= inicioCirurgia:
                         ocupado['inicio'] = inicioCirurgiaCorrente
                         ocupado['fim'] = fimCirurgiaCorrente
                         ocupado['ocupado'] = True
+
+                        return ocupado
 
     return ocupado
 
@@ -145,6 +150,7 @@ def popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidade
             #verificar se cirurgiao esta ocupado
             ocupadoNoPeriodo = cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, tempoSalas[s][d], d)
             if ocupadoNoPeriodo['ocupado']:
+                # print('(solucao inicial) o cirurgiao esta ocupado')
                 continue
 
             # for i in range(int(tempoSalas[s][d]), int( cirurgia['tc'] + tempoSalas[s][d])):
