@@ -3,6 +3,8 @@ import copy
 
 from utils import filterBy, _filter, ordenaCirurgias, getPenalizacao, mapToList
 
+from fitness import viavel
+
 # sobreposicao de horario cirurgiao
 # maximo horario cirurgiao
 # sobreposicao de horario cirurgia
@@ -91,12 +93,14 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
         return solucao
     
     cirurgias_ = mapToList(params['solucao'])
-    cirurgias_ = [ c for c in cirurgias_ if c['id'] in idsCirurgiasNaoAlocadas ]
+    cirurgias_ = [ c for c in cirurgias_ if c['alocada'] == False ]
 
     #print(cirurgias_)
     
     compareF = lambda cirurgia : float(cirurgia['prioridade']) / (cirurgia['diasEspera'] * getPenalizacao(cirurgia['prioridade']))
     cirurgias_ = ordenaCirurgias(cirurgias_, compareF)
+
+    # print(cirurgias_)
     # random.shuffle(cirurgias_)
     maxPos = max( int(len(cirurgias_) * (1 - params['alpha'])),  1)
     # #print(maxPos)
@@ -105,10 +109,11 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
     # #print(cirurgias_, idsCirurgiasNaoAlocadas)
   
     cirurgiaEscolhida = random.choice(cirurgias_)
-    #print('cirurgiaEscolhida ', cirurgiaEscolhida)
+    # print('cirurgiaEscolhida ', cirurgiaEscolhida)
 
     for d in range(0, params['D']):
         for s in range(0, params['S']):
+            # print('d - s :', d , s)
             filterF = lambda cirurgia : cirurgia['dia'] == d and cirurgia['sala'] == s
             cirurgiasDiaSala = _filter(solucao, filterF)
             cirurgiasDiaSala = mapToList(cirurgiasDiaSala)
@@ -121,9 +126,6 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
                 ultimaDoDiaSala = cirurgiasDiaSala[len(cirurgiasDiaSala) - 1]
                 inicio = ultimaDoDiaSala['horaFim'] + 3
                 fim = ultimaDoDiaSala['horaFim'] + 3 + cirurgiaEscolhida['duracao'] - 1
-
-            if fim > 45:
-                continue
 
             cirurgia = {
                             "id": cirurgiaEscolhida['id'],
@@ -141,12 +143,17 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
             
             solucao[cirurgia['id']] = cirurgia
 
+            # print('inicio fim ', inicio, fim)
+            if viavel(solucao, params['S'], 45, params['D']) == False:
+                solucao = params['solucao']
+                continue
+
             # #print('busca local ', cirurgia)
             return solucao
             #se puder adicionar cirurgia adiciona e retorna
 
 
-    return solucao
+    return params['solucao']
 
 
 #sortear cirurgia a ser inserida de forma gulosa com base em um alpha (0 = totalmente aleatorio, 1 = totalmente guloso)

@@ -3,7 +3,7 @@ from utils import filterBy, filterNotBy, getPenalizacao, _filter, overlap, mapTo
 MAX_SLOTS_MEDICO_DIA = 24
 MAX_SLOTS_MEDICO_SEMANA = 100
 
-def viavel(solucao, S, T, D):
+def viavel(solucao, S, T, D, verbose=False):
     cirurgioes = []
     especialidades = []
     for c in solucao:
@@ -12,6 +12,20 @@ def viavel(solucao, S, T, D):
     
     cirurgioes = set(cirurgioes)
     especialidades = set(especialidades)
+
+    for c in solucao:
+        cirurgia = solucao[c]
+
+        if cirurgia['alocada'] == True  and cirurgia['horaFim'] > T:
+            if verbose:
+                print('cirurgia com T > 45', cirurgia)
+            return False
+
+        if cirurgia['prioridade'] == 1:
+            if  cirurgia['alocada'] == True and cirurgia['dia'] > 0:
+                if verbose:
+                    print('cirurgia p1 alocada em outro dia', cirurgia)
+                return False
 
     #verifica perdiodo de higienizacao entre cirurgias
     for d in range(0, D):
@@ -23,7 +37,8 @@ def viavel(solucao, S, T, D):
             cirurgiasDiaSala = ordenaCirurgias(cirurgiasDiaSala, getValor)
             for cirurgiaAnterior, cirurgiaCorrente in zip(cirurgiasDiaSala, cirurgiasDiaSala[1:]):
                 if cirurgiaCorrente['horaInicio'] - cirurgiaAnterior['horaFim'] < 3:
-                    #print(f'Solucao nao respeita criterio de higienizacao {cirurgiaCorrente["horaInicio"]} - { cirurgiaAnterior["horaFim"]}')
+                    if verbose:
+                        print(f'Solucao nao respeita criterio de higienizacao {cirurgiaCorrente["horaInicio"]} - { cirurgiaAnterior["horaFim"]}')
                     return False
 
     # Check if some room has more than one specialty in the same day
@@ -36,7 +51,8 @@ def viavel(solucao, S, T, D):
                 specialties.append(surgeries[c]['especialidade'])
 
             if len(set(specialties)) > 1:
-                #print(f"Room {s} has more than one specialty at day {d}. Check surgeries: {surgeries}.")
+                if verbose:
+                    print(f"Room {s} has more than one specialty at day {d}. Check surgeries: {surgeries}.")
                 return False
 
     # Check if some surgeon exceeds limit of 24/100 timesteps
@@ -54,11 +70,13 @@ def viavel(solucao, S, T, D):
                 tempoDia += cirurgiasDia[c]['duracao']
             
             if(tempoDia > MAX_SLOTS_MEDICO_DIA):
-                #print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_DIA} no dia {day}.')
+                if verbose:
+                    print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_DIA} no dia {day}.')
                 return False
             
             if(tempoSemana > MAX_SLOTS_MEDICO_SEMANA):
-                #print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_SEMANA}.')
+                if verbose:
+                    print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_SEMANA}.')
                 return False
 
     # Check if some surgeon has overlapping surgeries
@@ -74,7 +92,8 @@ def viavel(solucao, S, T, D):
                     cirurgia1 = cirurgiasDia[c1]
                     cirurgia2 = cirurgiasDia[c2]
                     if overlap(cirurgia1, cirurgia2):
-                        #print(f'cirurgias {c1} - {c2} do cirurgiao {cirurgiao} colidem')
+                        if verbose:
+                            print(f'cirurgias {c1} - {c2} do cirurgiao {cirurgiao} colidem')
                         return False
                     
 
@@ -89,7 +108,8 @@ def viavel(solucao, S, T, D):
                     cirurgia1 = cirurgiasDiaSala[c1]
                     cirurgia2 = cirurgiasDiaSala[c2]
                     if overlap(cirurgia1, cirurgia2):
-                        #print(f'cirurgias {c1} - {c2} colidem')
+                        if verbose:
+                            print(f'cirurgias {c1} - {c2} colidem')
                         return False
 
     return True

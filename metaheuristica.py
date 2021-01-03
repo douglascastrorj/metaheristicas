@@ -4,7 +4,7 @@ from math import e
 
 from utils import readDataset, createMap, filterBy, getDistinctSpecialtyArr, xcstdToMap
 from guloso2 import gerarSolucaoInicial
-from fitness import fitnessFunction, FO1, viavel
+from fitness import fitnessFunction, FO2, viavel
 import buscaLocal
 # from buscaLocal import trocaCirurgiasMesmoDia, trocaCirurgiasDiasDiferente, insercaoDeUmaOuMaisCirurgiasDaListaEspera, trocaCirurgiaMarcadaPorCirurgiaListaEspera, removeCirurgias
 
@@ -30,19 +30,21 @@ def simulatedAnealing(solucaoInicial, FO, T0=100, SAmax=100, alpha=0.5, _history
             iterT = iterT + 1
 
             #gerar vizinho
-            s1 = buscarVizinho(solucaoCorrente, T, T0)
-            delta = FO1(s1) - FO1(solucaoCorrente)
-            if viavel(s1, S, T, D):
+            s1 = buscarVizinho(solucaoCorrente, T, T0, iterT, SAmax)
+            delta = FO2(s1) - FO2(solucaoCorrente)
+            if viavel(s1, S, 45, D) == True:
                 if delta < 0:
                     solucaoCorrente = s1
-                    if FO1(s1) < FO1(bestSolution):
-                        print(FO1(s1))
+                    if FO2(s1) < FO2(bestSolution):
+                        print(FO2(s1))
                         bestSolution = s1
                         _history.append( copy.deepcopy(bestSolution) )
                 else:
                     x = random.random()
                     if x < e**(-delta/T):
                         solucaoCorrente = s1
+
+            # print(f'T {T}, iterT {iterT}')
         T = T * alpha
         iterT = 0
         # print(T)
@@ -52,27 +54,35 @@ def simulatedAnealing(solucaoInicial, FO, T0=100, SAmax=100, alpha=0.5, _history
     return bestSolution
 
 
-def buscarVizinho(solucao, T, T0):
+def buscarVizinho(solucao, T, T0, iterT, SAmax):
     coef = 1 - T/T0 # 0 < coef < 1
+    beta = iterT / SAmax
+
     # inicio do algoritmo
     # if coef > 0.5:
     #     return trocaCirurgiasDiasDiferente({'solucao': solucao, 'D': D})
     # else:
     #     return trocaCirurgiasDiasDiferente({'solucao': solucao, 'D': D})
 
-    fs = getLocalSearchFunctions(solucao, coef)
+    fs = getLocalSearchFunctions(solucao, coef, beta)
 
     func = random.choice(fs)
 
     return func['f'](func['params'])
 
-def getLocalSearchFunctions(solucao, coef):
-    fs = [
+def getLocalSearchFunctions(solucao, coef, beta):
+    # print(coef)
+
+    if beta > 0.8:
+        return [
+            {'f': buscaLocal.insercaoDeUmaOuMaisCirurgiasDaListaEspera, 'params': {'solucao': solucao, 'D': D, 'S': S, 'alpha': beta}},
+            {'f': buscaLocal.removeCirurgias, 'params': {'solucao': solucao, 'alpha': coef}}
+        ]
+
+    return [
         {'f': buscaLocal.trocaCirurgiasMesmoDia, 'params': {'solucao': solucao, 'D': D}},
         {'f': buscaLocal.trocaCirurgiasDiasDiferente, 'params': {'solucao': solucao, 'D': D}},
-        {'f': buscaLocal.insercaoDeUmaOuMaisCirurgiasDaListaEspera, 'params': {'solucao': solucao, 'D': D, 'S': S, 'alpha': coef}},
         {'f': buscaLocal.trocaCirurgiaMarcadaPorCirurgiaListaEspera, 'params': {'solucao': solucao}},
+        # {'f': buscaLocal.insercaoDeUmaOuMaisCirurgiasDaListaEspera, 'params': {'solucao': solucao, 'D': D, 'S': S, 'alpha': 0}},
         {'f': buscaLocal.removeCirurgias, 'params': {'solucao': solucao, 'alpha': coef}}
     ]
-
-    return fs
