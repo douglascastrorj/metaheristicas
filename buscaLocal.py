@@ -21,7 +21,7 @@ def trocaCirurgiasMesmoDia(params):
     d = random.randint(0, D - 1)
 
     cirurgiasD = filterBy(solucaoAnterior, 'dia', d)
-    print(list(cirurgiasD.keys()))
+    # #print(list(cirurgiasD.keys()))
     if len(list(cirurgiasD.keys())) < 2:
         return solucaoAnterior
     
@@ -53,7 +53,7 @@ def trocaCirurgiasDiasDiferente(params):
             cirurgiasD[d] = cd
 
     if len(cirurgiasD.keys()) < 2:
-        # print('nao existem cirurgias em dias diferentes')
+        # #print('nao existem cirurgias em dias diferentes')
         return solucao
     
     d1 = random.choice(list(cirurgiasD.keys()))
@@ -73,14 +73,15 @@ def trocaCirurgiasDiasDiferente(params):
     solucao[c2]['dia'] = solucaoAnterior[c1]['dia']
     solucao[c2]['sala'] = solucaoAnterior[c1]['sala']
 
-    # print(f'\n\n c1 {c1} c2 {c2}\n\n')
-    # print(solucaoAnterior)
-    # print('\n- --------- -\n')
-    # print(solucao)
+    # #print(f'\n\n c1 {c1} c2 {c2}\n\n')
+    # #print(solucaoAnterior)
+    # #print('\n- --------- -\n')
+    # #print(solucao)
 
     return solucao
 
 #inserindo apenas uma por enquanto
+#sortear cirurgia a ser inserida de forma gulosa com base em um alpha (0 = totalmente aleatorio, 1 = totalmente guloso)
 def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
     solucao = copy.deepcopy(params['solucao'])
 
@@ -89,23 +90,22 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
     if len(idsCirurgiasNaoAlocadas) == 0:
         return solucao
     
-    #sortear cirurgia a ser inserida de forma gulosa com base em um alpha (0 = totalmente aleatorio, 1 = totalmente guloso)
     cirurgias_ = mapToList(params['solucao'])
     cirurgias_ = [ c for c in cirurgias_ if c['id'] in idsCirurgiasNaoAlocadas ]
 
-    print(cirurgias_)
+    #print(cirurgias_)
     
     compareF = lambda cirurgia : float(cirurgia['prioridade']) / (cirurgia['diasEspera'] * getPenalizacao(cirurgia['prioridade']))
     cirurgias_ = ordenaCirurgias(cirurgias_, compareF)
     # random.shuffle(cirurgias_)
     maxPos = max( int(len(cirurgias_) * (1 - params['alpha'])),  1)
-    # print(maxPos)
+    # #print(maxPos)
     cirurgias_ = cirurgias_[: maxPos]
     
-    # print(cirurgias_, idsCirurgiasNaoAlocadas)
+    # #print(cirurgias_, idsCirurgiasNaoAlocadas)
   
     cirurgiaEscolhida = random.choice(cirurgias_)
-    print('cirurgiaEscolhida ', cirurgiaEscolhida)
+    #print('cirurgiaEscolhida ', cirurgiaEscolhida)
 
     for d in range(0, params['D']):
         for s in range(0, params['S']):
@@ -141,7 +141,7 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
             
             solucao[cirurgia['id']] = cirurgia
 
-            # print('busca local ', cirurgia)
+            # #print('busca local ', cirurgia)
             return solucao
             #se puder adicionar cirurgia adiciona e retorna
 
@@ -149,9 +149,64 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
     return solucao
 
 
-def trocaCirurgiaMarcadaPorCirurgiaListaEspera(Xcstd, cirurgias):
+#sortear cirurgia a ser inserida de forma gulosa com base em um alpha (0 = totalmente aleatorio, 1 = totalmente guloso)
+def removeCirurgias(params):
+    solucao = copy.deepcopy(params['solucao'])
 
-    return Xcstd
+    alocadas = filterBy(solucao, 'alocada', True)
+
+    if len(alocadas) == 0:
+        return solucao
+
+    cirurgias_ = mapToList(alocadas)
+    compareF = lambda cirurgia : float(cirurgia['prioridade']) / (cirurgia['diasEspera'] * getPenalizacao(cirurgia['prioridade']))
+    cirurgias_ = ordenaCirurgias(cirurgias_, compareF)
+    cirurgias_.reverse()
+
+    maxPos = max( int(len(cirurgias_) * (1 - params['alpha'])),  1)
+    cirurgias_ = cirurgias_[: maxPos]
+    
+    # #print(cirurgias_, idsCirurgiasNaoAlocadas)
+  
+    cirurgiaEscolhida = random.choice(cirurgias_)
+    cirurgiaAlocada = cirurgiaEscolhida['id']
+
+    # print(f'cirurgia {cirurgiaAlocada} removida')
+
+    solucao[cirurgiaAlocada]['dia'] = None
+    solucao[cirurgiaAlocada]['sala'] = None
+    solucao[cirurgiaAlocada]['horaInicio'] = None
+    solucao[cirurgiaAlocada]['horaFim'] = None
+    solucao[cirurgiaAlocada]['alocada'] = False
+
+    return solucao 
+
+def trocaCirurgiaMarcadaPorCirurgiaListaEspera(params):
+    solucao = copy.deepcopy(params['solucao'])
+
+    alocadas = filterBy(solucao, 'alocada', True)
+    naoAlocadas = filterBy(solucao, 'alocada', False)
+
+    if len(alocadas) == 0 or len(naoAlocadas) == 0:
+        return solucao
+
+    cirurgiaAlocada = random.choice(list(alocadas.keys()))
+    cirurgiaNaoAlocada = random.choice(list(naoAlocadas.keys()))
+
+    solucao[cirurgiaNaoAlocada]['dia'] = solucao[cirurgiaAlocada]['dia']
+    solucao[cirurgiaNaoAlocada]['sala'] = solucao[cirurgiaAlocada]['sala']
+    solucao[cirurgiaNaoAlocada]['horaInicio'] = solucao[cirurgiaAlocada]['horaInicio']
+    solucao[cirurgiaNaoAlocada]['horaFim'] = solucao[cirurgiaAlocada]['horaInicio'] + solucao[cirurgiaNaoAlocada]['duracao'] - 1
+    solucao[cirurgiaNaoAlocada]['alocada'] = True
+
+    solucao[cirurgiaAlocada]['dia'] = None
+    solucao[cirurgiaAlocada]['sala'] = None
+    solucao[cirurgiaAlocada]['horaInicio'] = None
+    solucao[cirurgiaAlocada]['horaFim'] = None
+    solucao[cirurgiaAlocada]['alocada'] = False
+
+
+    return solucao
 
 def trocaCirurgiaMarcadaPorDuasCirurgiasListaEspera(Xcstd, cirurgias):
 

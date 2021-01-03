@@ -23,7 +23,7 @@ def viavel(solucao, S, T, D):
             cirurgiasDiaSala = ordenaCirurgias(cirurgiasDiaSala, getValor)
             for cirurgiaAnterior, cirurgiaCorrente in zip(cirurgiasDiaSala, cirurgiasDiaSala[1:]):
                 if cirurgiaCorrente['horaInicio'] - cirurgiaAnterior['horaFim'] < 3:
-                    print(f'Solucao nao respeita criterio de higienizacao {cirurgiaCorrente["horaInicio"]} - { cirurgiaAnterior["horaFim"]}')
+                    #print(f'Solucao nao respeita criterio de higienizacao {cirurgiaCorrente["horaInicio"]} - { cirurgiaAnterior["horaFim"]}')
                     return False
 
     # Check if some room has more than one specialty in the same day
@@ -36,13 +36,14 @@ def viavel(solucao, S, T, D):
                 specialties.append(surgeries[c]['especialidade'])
 
             if len(set(specialties)) > 1:
-                print(f"Room {s} has more than one specialty at day {d}. Check surgeries: {surgeries}.")
+                #print(f"Room {s} has more than one specialty at day {d}. Check surgeries: {surgeries}.")
                 return False
 
     # Check if some surgeon exceeds limit of 24/100 timesteps
     for day in range(1, D):
         for cirurgiao in cirurgioes:
-            cirurgiasSemana = filterBy(solucao, 'cirurgiao', cirurgiao)
+            filterF = lambda cirurgia : cirurgia['alocada'] == True and cirurgia['cirurgiao'] == cirurgiao
+            cirurgiasSemana = _filter(solucao, filterF)
             tempoSemana = 0
             for c in cirurgiasSemana:
                 tempoSemana += cirurgiasSemana[c]['duracao']
@@ -53,18 +54,18 @@ def viavel(solucao, S, T, D):
                 tempoDia += cirurgiasDia[c]['duracao']
             
             if(tempoDia > MAX_SLOTS_MEDICO_DIA):
-                print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_DIA} no dia {day}.')
+                #print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_DIA} no dia {day}.')
                 return False
             
             if(tempoSemana > MAX_SLOTS_MEDICO_SEMANA):
-                print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_SEMANA}.')
+                #print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_SEMANA}.')
                 return False
 
     # Check if some surgeon has overlapping surgeries
     for day in range(0, D):
         for cirurgiao in cirurgioes:
-            cirurgiasSemana = filterBy(solucao, 'cirurgiao', cirurgiao)
-            cirurgiasDia = filterBy(cirurgiasSemana, 'dia', day)
+            filterF = lambda cirurgia : cirurgia['alocada'] == True and cirurgia['cirurgiao'] == cirurgiao and cirurgia['dia'] == day
+            cirurgiasDia = _filter(solucao, filterF)
             for c1 in cirurgiasDia:
                 for c2 in cirurgiasDia:
                     if c1 == c2:
@@ -73,7 +74,7 @@ def viavel(solucao, S, T, D):
                     cirurgia1 = cirurgiasDia[c1]
                     cirurgia2 = cirurgiasDia[c2]
                     if overlap(cirurgia1, cirurgia2):
-                        print(f'cirurgias {c1} - {c2} do cirurgiao {cirurgiao} colidem')
+                        #print(f'cirurgias {c1} - {c2} do cirurgiao {cirurgiao} colidem')
                         return False
                     
 
@@ -81,14 +82,14 @@ def viavel(solucao, S, T, D):
     # Check if surgeries overlap
     for day in range(1, D):
         for s in range(0, S):
-            filterDiaSala = lambda cirurgia : cirurgia['dia'] == d and cirurgia['sala'] == s
+            filterDiaSala = lambda cirurgia : cirurgia['dia'] == d and cirurgia['sala'] == s and cirurgia['alocada'] == True
             cirurgiasDiaSala = _filter(solucao, filterDiaSala)
             for c1 in cirurgiasDiaSala:
                 for c2 in cirurgiasDiaSala:
                     cirurgia1 = cirurgiasDiaSala[c1]
                     cirurgia2 = cirurgiasDiaSala[c2]
                     if overlap(cirurgia1, cirurgia2):
-                        print(f'cirurgias {c1} - {c2} colidem')
+                        #print(f'cirurgias {c1} - {c2} colidem')
                         return False
 
     return True
@@ -103,7 +104,7 @@ def FO1(solucao):
         cirurgia = cirurgiasD0[c]
         if cirurgia['alocada'] == False:
             continue
-        # print (cirurgia)
+        # #print (cirurgia)
         wc = cirurgia['diasEspera']
         fo += (wc + 3) * cirurgia['duracao']
 
@@ -152,4 +153,42 @@ def fitnessFunction( cirurgias, S, T, D, Xcstd, z):
         Epc = getPenalizacao(pc)
         fo += pc * Epc * z[c]
 
+    return fo
+
+
+
+def FO2(solucao):
+    lp = { 1: 3, 2: 15, 3: 60, 4: 365 }
+
+    fo = 0
+    
+    filterFunc = lambda cirurgia : cirurgia['prioridade'] == 1 and cirurgia['alocada'] == True and cirurgia['dia'] != 0
+    cirurgiasP1 = _filter(solucao, filterFunc)
+    for c in cirurgiasP1:
+        cirurgia = cirurgiasP1[c]
+        wc = cirurgia['diasEspera']
+        d = cirurgia['dia'] + 1
+        fo += 10*(wc + 2)**d
+    
+    cirurgiasAlocadas = filterBy(solucao, 'alocada', True)
+    for c in cirurgiasAlocadas:
+        cirurgia = cirurgiasAlocadas[c]
+        wc = cirurgia['diasEspera']
+        d = cirurgia['dia'] + 1
+        lpc = lp[cirurgia['prioridade']]
+        vc = int(wc > lpc)
+
+        fo += ( (wc + 2 + d)**2 ) + ((wc + 2 + d - lpc)**2) * vc
+    
+
+    cirurgiasNaoAlocadas = filterBy(solucao, 'alocada', False)
+    for c in cirurgiasNaoAlocadas:
+        cirurgia = cirurgiasNaoAlocadas[c]
+        wc = cirurgia['diasEspera']
+        lpc = lp[cirurgia['prioridade']]
+        epsilon = getPenalizacao(cirurgia['prioridade'])
+        vc = int(wc > lpc)
+
+        fo += ((wc + 7)**2)*epsilon + (epsilon*(wc + 9 -lpc)**2)*vc
+ 
     return fo
