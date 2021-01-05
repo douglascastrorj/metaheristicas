@@ -102,5 +102,6 @@ def getLocalSearchFunctions(solucao, config, coef, beta):
         {'f': buscaLocal.trocaCirurgiasDiasDiferente, 'params': {'solucao': solucao, 'D': config['D']}},
         {'f': buscaLocal.trocaCirurgiaMarcadaPorCirurgiaListaEspera, 'params': {'solucao': solucao}},
         # {'f': buscaLocal.insercaoDeUmaOuMaisCirurgiasDaListaEspera, 'params': {'solucao': solucao, 'D': D, 'S': S, 'alpha': 0}},
+        # {'f': buscaLocal.realocarHorario, 'params': {'solucao': solucao}},
         {'f': buscaLocal.removeCirurgias, 'params': {'solucao': solucao, 'alpha': coef}}
     ]

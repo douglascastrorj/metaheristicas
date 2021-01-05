@@ -215,6 +215,19 @@ def trocaCirurgiaMarcadaPorCirurgiaListaEspera(params):
 
     return solucao
 
+def realocarHorario(params):
+    solucao = copy.deepcopy(params['solucao'])
+
+    alocadas = filterBy(solucao, 'alocada', True)
+    cirurgiaEscolhida = random.choice(list(alocadas.keys()))
+    deslocamento = random.randint(1, 10)
+    direcao = random.choice([1, -1])
+
+    solucao[cirurgiaEscolhida]['horaInicio'] += deslocamento * direcao
+    solucao[cirurgiaEscolhida]['horaFim'] += deslocamento * direcao  
+
+    return solucao
+
 def trocaCirurgiaMarcadaPorDuasCirurgiasListaEspera(params):
     solucao = copy.deepcopy(params['solucao'])
     return solucao
