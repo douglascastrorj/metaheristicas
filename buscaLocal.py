@@ -144,7 +144,7 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
             solucao[cirurgia['id']] = cirurgia
 
             # print('inicio fim ', inicio, fim)
-            if viavel(solucao, params['S'], 45, params['D']) == False:
+            if viavel(solucao, params['S'], 46, params['D']) == False:
                 solucao = params['solucao']
                 continue
 
@@ -215,18 +215,18 @@ def trocaCirurgiaMarcadaPorCirurgiaListaEspera(params):
 
     return solucao
 
-def trocaCirurgiaMarcadaPorDuasCirurgiasListaEspera(Xcstd, cirurgias):
+def trocaCirurgiaMarcadaPorDuasCirurgiasListaEspera(params):
+    solucao = copy.deepcopy(params['solucao'])
+    return solucao
 
-    return Xcstd
+def trocaDuasCirurgiasMarcadasPorUmaCirurgiaListaEspera(params):
+    solucao = copy.deepcopy(params['solucao'])
+    return solucao
 
-def trocaDuasCirurgiasMarcadasPorUmaCirurgiaListaEspera(Xcstd, cirurgias):
+def trocaDuasCirurgiasMarcadasPorDuasCirurgiasListaEspera(params):
+    solucao = copy.deepcopy(params['solucao'])
+    return solucao
 
-    return Xcstd
-
-def trocaDuasCirurgiasMarcadasPorDuasCirurgiasListaEspera(Xcstd, cirurgias):
-
-    return Xcstd
-
-def trocaDuasFimSemanaPorUmaInicioSemana(Xcstd, cirurgias):
-
-    return Xcstd
+def trocaDuasFimSemanaPorUmaInicioSemana(params):
+    solucao = copy.deepcopy(params['solucao'])
+    return solucao

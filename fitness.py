@@ -18,7 +18,7 @@ def viavel(solucao, S, T, D, verbose=False):
 
         if cirurgia['alocada'] == True  and cirurgia['horaFim'] > T:
             if verbose:
-                print('cirurgia com T > 45', cirurgia)
+                print('cirurgia com T > 46', cirurgia)
             return False
 
         if cirurgia['prioridade'] == 1:
@@ -105,6 +105,8 @@ def viavel(solucao, S, T, D, verbose=False):
             cirurgiasDiaSala = _filter(solucao, filterDiaSala)
             for c1 in cirurgiasDiaSala:
                 for c2 in cirurgiasDiaSala:
+                    if c1 == c2:
+                        continue
                     cirurgia1 = cirurgiasDiaSala[c1]
                     cirurgia2 = cirurgiasDiaSala[c2]
                     if overlap(cirurgia1, cirurgia2):
