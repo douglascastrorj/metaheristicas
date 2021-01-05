@@ -2,7 +2,7 @@ import random
 import copy
 from math import e
 
-from utils import readDataset, createMap, filterBy, getDistinctSpecialtyArr, xcstdToMap
+from utils import readDataset, createMap, filterBy, getDistinctSpecialtyArr, xcstdToMap, filterBy
 from guloso2 import gerarSolucaoInicial
 from fitness import fitnessFunction, FO2, viavel
 import buscaLocal
@@ -12,7 +12,7 @@ import buscaLocal
 # SAmax: numero maximo de iteracoes Metropolis para cadaTemperatura
 # alpha: taxa de resfriamento 0 < alpha < 1
 # T0: temperatura inicial
-def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, _history = False, maxIterSemMelhoras = 5000, verbose = False):
+def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, _history = False, maxIterSemMelhoras = 2500, verbose = False):
     
     #armazena as atualizacoes de best
     _history = []
@@ -40,11 +40,11 @@ def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, 
                             _print(T, FO2(s1),  FO2(bestSolution) )
                         bestSolution = copy.deepcopy(s1)
                         _history.append( copy.deepcopy(bestSolution) )
-                        iterSemMelhoras = 0
                 else:
                     x = random.random()
                     if x < e**(-delta/T):
                         solucaoCorrente = copy.deepcopy(s1)
+                        iterSemMelhoras = 0
                         if FO2(s1) < FO2(bestSolution):
                             bestSolution = copy.deepcopy(s1)
                         if verbose:
@@ -52,12 +52,12 @@ def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, 
             
             #parar algoritmo mais cedo
             if iterSemMelhoras > maxIterSemMelhoras:
-                break
+                solucaoCorrente = peteleco(solucaoCorrente)
         
         #parar algoritmo mais cedo
-        if iterSemMelhoras > maxIterSemMelhoras:
-            print(f'maximo de iteraçoes sem melhoras atingido {maxIterSemMelhoras}')
-            break
+        # if iterSemMelhoras > maxIterSemMelhoras:
+        #     print(f'maximo de iteraçoes sem melhoras atingido {maxIterSemMelhoras}')
+        #     break
 
             # print(f'T {T}, iterT {iterT}')
         T = T * alpha
@@ -102,6 +102,15 @@ def getLocalSearchFunctions(solucao, config, coef, beta):
         {'f': buscaLocal.trocaCirurgiasDiasDiferente, 'params': {'solucao': solucao, 'D': config['D']}},
         {'f': buscaLocal.trocaCirurgiaMarcadaPorCirurgiaListaEspera, 'params': {'solucao': solucao}},
         # {'f': buscaLocal.insercaoDeUmaOuMaisCirurgiasDaListaEspera, 'params': {'solucao': solucao, 'D': D, 'S': S, 'alpha': 0}},
-        # {'f': buscaLocal.realocarHorario, 'params': {'solucao': solucao}},
+        {'f': buscaLocal.realocarHorario, 'params': {'solucao': solucao}},
         {'f': buscaLocal.removeCirurgias, 'params': {'solucao': solucao, 'alpha': coef}}
     ]
+
+
+def peteleco(solucao):
+    print('\n\n\n\n\n\n PETELECO!! \n\n\n\n\n')
+    s = copy.deepcopy(solucao) 
+    qtdARemover = random.randint(0, len(solucao) * 0.35)
+    for i in range(0, qtdARemover):
+        s = buscaLocal.removeCirurgias({'solucao': s, 'alpha': random.random()})
+    return s

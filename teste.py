@@ -16,7 +16,7 @@ config = {
 }
 
 
-dataset = readDataset('dataset/i001.csv')
+dataset = readDataset('dataset/C100H10E4.csv')
 cirurgias = createMap(dataset)
 
 

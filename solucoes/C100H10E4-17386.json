@@ -1,0 +1,202 @@
+{
+    1: {'id': 1, 'sala': 3, 'horaInicio': 0, 'horaFim': 10, 'dia': 0, 'duracao': 10, 'cirurgiao': 1, 'diasEspera': 3, 'prioridade': 1, 'especialidade': 3, 'alocada': True
+    },
+    2: {'id': 2, 'sala': 3, 'horaInicio': 16, 'horaFim': 29, 'dia': 0, 'duracao': 14, 'cirurgiao': 9, 'diasEspera': 2, 'prioridade': 1, 'especialidade': 3, 'alocada': True
+    },
+    3: {'id': 3, 'sala': 2, 'horaInicio': 18, 'horaFim': 27, 'dia': 0, 'duracao': 10, 'cirurgiao': 2, 'diasEspera': 3, 'prioridade': 1, 'especialidade': 1, 'alocada': True
+    },
+    5: {'id': 5, 'sala': 1, 'horaInicio': 0, 'horaFim': 11, 'dia': 0, 'duracao': 12, 'cirurgiao': 3, 'diasEspera': 5, 'prioridade': 1, 'especialidade': 2, 'alocada': True
+    },
+    6: {'id': 6, 'sala': 2, 'horaInicio': 0, 'horaFim': 12, 'dia': 0, 'duracao': 13, 'cirurgiao': 1, 'diasEspera': 10, 'prioridade': 1, 'especialidade': 1, 'alocada': True
+    },
+    7: {'id': 7, 'sala': 0, 'horaInicio': -19, 'horaFim': -7, 'dia': 0, 'duracao': 13, 'cirurgiao': 2, 'diasEspera': 9, 'prioridade': 1, 'especialidade': 4, 'alocada': True
+    },
+    8: {'id': 8, 'sala': 0, 'horaInicio': 25, 'horaFim': 29, 'dia': 0, 'duracao': 5, 'cirurgiao': 10, 'diasEspera': 7, 'prioridade': 1, 'especialidade': 4, 'alocada': True
+    },
+    9: {'id': 9, 'sala': 0, 'horaInicio': 10, 'horaFim': 16, 'dia': 0, 'duracao': 7, 'cirurgiao': 8, 'diasEspera': 3, 'prioridade': 1, 'especialidade': 4, 'alocada': True
+    },
+    10: {'id': 10, 'sala': 1, 'horaInicio': 14, 'horaFim': 28, 'dia': 0, 'duracao': 15, 'cirurgiao': 6, 'diasEspera': 9, 'prioridade': 1, 'especialidade': 2, 'alocada': True
+    },
+    18: {'id': 18, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 5, 'cirurgiao': 9, 'diasEspera': 7, 'prioridade': 4, 'especialidade': 2, 'alocada': False
+    },
+    24: {'id': 24, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 14, 'cirurgiao': 7, 'diasEspera': 7, 'prioridade': 4, 'especialidade': 1, 'alocada': False
+    },
+    36: {'id': 36, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 7, 'cirurgiao': 10, 'diasEspera': 9, 'prioridade': 4, 'especialidade': 3, 'alocada': False
+    },
+    40: {'id': 40, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 11, 'cirurgiao': 5, 'diasEspera': 6, 'prioridade': 4, 'especialidade': 2, 'alocada': False
+    },
+    46: {'id': 46, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 6, 'cirurgiao': 5, 'diasEspera': 1, 'prioridade': 4, 'especialidade': 2, 'alocada': False
+    },
+    47: {'id': 47, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 6, 'cirurgiao': 4, 'diasEspera': 5, 'prioridade': 4, 'especialidade': 2, 'alocada': False
+    },
+    51: {'id': 51, 'sala': 1, 'horaInicio': 42, 'horaFim': 46, 'dia': 0, 'duracao': 5, 'cirurgiao': 6, 'diasEspera': 8, 'prioridade': 2, 'especialidade': 2, 'alocada': True
+    },
+    59: {'id': 59, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 11, 'cirurgiao': 8, 'diasEspera': 4, 'prioridade': 4, 'especialidade': 2, 'alocada': False
+    },
+    63: {'id': 63, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 14, 'cirurgiao': 4, 'diasEspera': 8, 'prioridade': 4, 'especialidade': 3, 'alocada': False
+    },
+    75: {'id': 75, 'sala': 1, 'horaInicio': 42, 'horaFim': 46, 'dia': 1, 'duracao': 5, 'cirurgiao': 7, 'diasEspera': 9, 'prioridade': 3, 'especialidade': 3, 'alocada': True
+    },
+    85: {'id': 85, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 9, 'cirurgiao': 3, 'diasEspera': 6, 'prioridade': 4, 'especialidade': 4, 'alocada': False
+    },
+    87: {'id': 87, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 6, 'cirurgiao': 5, 'diasEspera': 5, 'prioridade': 4, 'especialidade': 3, 'alocada': False
+    },
+    93: {'id': 93, 'sala': 3, 'horaInicio': 17, 'horaFim': 22, 'dia': 2, 'duracao': 6, 'cirurgiao': 8, 'diasEspera': 7, 'prioridade': 3, 'especialidade': 2, 'alocada': True
+    },
+    94: {'id': 94, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 12, 'cirurgiao': 10, 'diasEspera': 6, 'prioridade': 4, 'especialidade': 3, 'alocada': False
+    },
+    4: {'id': 4, 'sala': 2, 'horaInicio': 30, 'horaFim': 44, 'dia': 0, 'duracao': 15, 'cirurgiao': 2, 'diasEspera': 2, 'prioridade': 1, 'especialidade': 1, 'alocada': True
+    },
+    11: {'id': 11, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 11, 'cirurgiao': 10, 'diasEspera': 2, 'prioridade': 3, 'especialidade': 1, 'alocada': False
+    },
+    12: {'id': 12, 'sala': 3, 'horaInicio': 32, 'horaFim': 39, 'dia': 2, 'duracao': 8, 'cirurgiao': 5, 'diasEspera': 6, 'prioridade': 3, 'especialidade': 2, 'alocada': True
+    },
+    13: {'id': 13, 'sala': 2, 'horaInicio': -1, 'horaFim': 5, 'dia': 1, 'duracao': 7, 'cirurgiao': 8, 'diasEspera': 6, 'prioridade': 2, 'especialidade': 2, 'alocada': True
+    },
+    14: {'id': 14, 'sala': 2, 'horaInicio': -9, 'horaFim': -4, 'dia': 1, 'duracao': 6, 'cirurgiao': 4, 'diasEspera': 4, 'prioridade': 2, 'especialidade': 2, 'alocada': True
+    },
+    15: {'id': 15, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 15, 'cirurgiao': 4, 'diasEspera': 3, 'prioridade': 3, 'especialidade': 1, 'alocada': False
+    },
+    16: {'id': 16, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 12, 'cirurgiao': 4, 'diasEspera': 3, 'prioridade': 3, 'especialidade': 2, 'alocada': False
+    },
+    17: {'id': 17, 'sala': 2, 'horaInicio': 15, 'horaFim': 25, 'dia': 1, 'duracao': 11, 'cirurgiao': 5, 'diasEspera': 3, 'prioridade': 2, 'especialidade': 2, 'alocada': True
+    },
+    19: {'id': 19, 'sala': 3, 'horaInicio': -7, 'horaFim': 4, 'dia': 1, 'duracao': 11, 'cirurgiao': 3, 'diasEspera': 8, 'prioridade': 2, 'especialidade': 4, 'alocada': True
+    },
+    20: {'id': 20, 'sala': 3, 'horaInicio': 21, 'horaFim': 25, 'dia': 1, 'duracao': 5, 'cirurgiao': 6, 'diasEspera': 4, 'prioridade': 2, 'especialidade': 4, 'alocada': True
+    },
+    21: {'id': 21, 'sala': 2, 'horaInicio': 28, 'horaFim': 37, 'dia': 1, 'duracao': 10, 'cirurgiao': 10, 'diasEspera': 9, 'prioridade': 3, 'especialidade': 2, 'alocada': True
+    },
+    22: {'id': 22, 'sala': 2, 'horaInicio': 0, 'horaFim': 10, 'dia': 2, 'duracao': 11, 'cirurgiao': 4, 'diasEspera': 7, 'prioridade': 2, 'especialidade': 4, 'alocada': True
+    },
+    23: {'id': 23, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 6, 'cirurgiao': 3, 'diasEspera': 9, 'prioridade': 4, 'especialidade': 1, 'alocada': False
+    },
+    25: {'id': 25, 'sala': 1, 'horaInicio': 31, 'horaFim': 36, 'dia': 0, 'duracao': 5, 'cirurgiao': 10, 'diasEspera': 10, 'prioridade': 2, 'especialidade': 2, 'alocada': True
+    },
+    26: {'id': 26, 'sala': 3, 'horaInicio': 35, 'horaFim': 42, 'dia': 1, 'duracao': 8, 'cirurgiao': 2, 'diasEspera': 10, 'prioridade': 3, 'especialidade': 4, 'alocada': True
+    },
+    27: {'id': 27, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 12, 'cirurgiao': 9, 'diasEspera': 2, 'prioridade': 3, 'especialidade': 2, 'alocada': False
+    },
+    28: {'id': 28, 'sala': 2, 'horaInicio': -17, 'horaFim': -12, 'dia': 1, 'duracao': 5, 'cirurgiao': 2, 'diasEspera': 9, 'prioridade': 2, 'especialidade': 2, 'alocada': True
+    },
+    29: {'id': 29, 'sala': 2, 'horaInicio': 26, 'horaFim': 34, 'dia': 2, 'duracao': 9, 'cirurgiao': 7, 'diasEspera': 3, 'prioridade': 2, 'especialidade': 4, 'alocada': True
+    },
+    30: {'id': 30, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 13, 'cirurgiao': 6, 'diasEspera': 2, 'prioridade': 4, 'especialidade': 3, 'alocada': False
+    },
+    31: {'id': 31, 'sala': 3, 'horaInicio': 0, 'horaFim': 14, 'dia': 2, 'duracao': 15, 'cirurgiao': 1, 'diasEspera': 9, 'prioridade': 3, 'especialidade': 2, 'alocada': True
+    },
+    32: {'id': 32, 'sala': 1, 'horaInicio': 33, 'horaFim': 39, 'dia': 1, 'duracao': 7, 'cirurgiao': 7, 'diasEspera': 4, 'prioridade': 2, 'especialidade': 3, 'alocada': True
+    },
+    33: {'id': 33, 'sala': 0, 'horaInicio': 12, 'horaFim': 22, 'dia': 2, 'duracao': 11, 'cirurgiao': 4, 'diasEspera': 9, 'prioridade': 3, 'especialidade': 3, 'alocada': True
+    },
+    34: {'id': 34, 'sala': 0, 'horaInicio': 13, 'horaFim': 23, 'dia': 4, 'duracao': 11, 'cirurgiao': 6, 'diasEspera': 1, 'prioridade': 2, 'especialidade': 2, 'alocada': True
+    },
+    35: {'id': 35, 'sala': 0, 'horaInicio': 24, 'horaFim': 30, 'dia': 3, 'duracao': 7, 'cirurgiao': 4, 'diasEspera': 4, 'prioridade': 3, 'especialidade': 3, 'alocada': True
+    },
+    37: {'id': 37, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 12, 'cirurgiao': 1, 'diasEspera': 2, 'prioridade': 4, 'especialidade': 3, 'alocada': False
+    },
+    38: {'id': 38, 'sala': 3, 'horaInicio': 0, 'horaFim': 11, 'dia': 3, 'duracao': 12, 'cirurgiao': 4, 'diasEspera': 8, 'prioridade': 3, 'especialidade': 2, 'alocada': True
+    },
+    39: {'id': 39, 'sala': 1, 'horaInicio': 16, 'horaFim': 24, 'dia': 2, 'duracao': 9, 'cirurgiao': 5, 'diasEspera': 7, 'prioridade': 2, 'especialidade': 1, 'alocada': True
+    },
+    41: {'id': 41, 'sala': 2, 'horaInicio': 8, 'horaFim': 12, 'dia': 1, 'duracao': 5, 'cirurgiao': 3, 'diasEspera': 8, 'prioridade': 2, 'especialidade': 2, 'alocada': True
+    },
+    42: {'id': 42, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 14, 'cirurgiao': 6, 'diasEspera': 6, 'prioridade': 4, 'especialidade': 2, 'alocada': False
+    },
+    43: {'id': 43, 'sala': 0, 'horaInicio': 16, 'horaFim': 21, 'dia': 3, 'duracao': 6, 'cirurgiao': 2, 'diasEspera': 8, 'prioridade': 3, 'especialidade': 3, 'alocada': True
+    },
+    44: {'id': 44, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 8, 'cirurgiao': 1, 'diasEspera': 4, 'prioridade': 4, 'especialidade': 4, 'alocada': False
+    },
+    45: {'id': 45, 'sala': 0, 'horaInicio': 40, 'horaFim': 46, 'dia': 2, 'duracao': 7, 'cirurgiao': 10, 'diasEspera': 7, 'prioridade': 3, 'especialidade': 3, 'alocada': True
+    },
+    48: {'id': 48, 'sala': 2, 'horaInicio': 13, 'horaFim': 23, 'dia': 2, 'duracao': 11, 'cirurgiao': 6, 'diasEspera': 9, 'prioridade': 3, 'especialidade': 4, 'alocada': True
+    },
+    49: {'id': 49, 'sala': 0, 'horaInicio': 41, 'horaFim': 46, 'dia': 0, 'duracao': 6, 'cirurgiao': 10, 'diasEspera': 8, 'prioridade': 3, 'especialidade': 4, 'alocada': True
+    },
+    50: {'id': 50, 'sala': 2, 'horaInicio': 37, 'horaFim': 42, 'dia': 2, 'duracao': 6, 'cirurgiao': 2, 'diasEspera': 8, 'prioridade': 3, 'especialidade': 4, 'alocada': True
+    },
+    52: {'id': 52, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 11, 'cirurgiao': 4, 'diasEspera': 5, 'prioridade': 4, 'especialidade': 4, 'alocada': False
+    },
+    53: {'id': 53, 'sala': 1, 'horaInicio': 23, 'horaFim': 33, 'dia': 3, 'duracao': 11, 'cirurgiao': 5, 'diasEspera': 4, 'prioridade': 3, 'especialidade': 4, 'alocada': True
+    },
+    54: {'id': 54, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 15, 'cirurgiao': 1, 'diasEspera': 4, 'prioridade': 4, 'especialidade': 4, 'alocada': False
+    },
+    55: {'id': 55, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 13, 'cirurgiao': 3, 'diasEspera': 1, 'prioridade': 4, 'especialidade': 3, 'alocada': False
+    },
+    56: {'id': 56, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 6, 'cirurgiao': 9, 'diasEspera': 3, 'prioridade': 3, 'especialidade': 2, 'alocada': False
+    },
+    57: {'id': 57, 'sala': 1, 'horaInicio': 0, 'horaFim': 7, 'dia': 4, 'duracao': 8, 'cirurgiao': 5, 'diasEspera': 4, 'prioridade': 3, 'especialidade': 3, 'alocada': True
+    },
+    58: {'id': 58, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 10, 'cirurgiao': 5, 'diasEspera': 3, 'prioridade': 3, 'especialidade': 3, 'alocada': False
+    },
+    60: {'id': 60, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 14, 'cirurgiao': 7, 'diasEspera': 5, 'prioridade': 4, 'especialidade': 2, 'alocada': False
+    },
+    61: {'id': 61, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 12, 'cirurgiao': 5, 'diasEspera': 2, 'prioridade': 3, 'especialidade': 4, 'alocada': False
+    },
+    62: {'id': 62, 'sala': 2, 'horaInicio': 0, 'horaFim': 9, 'dia': 4, 'duracao': 10, 'cirurgiao': 2, 'diasEspera': 4, 'prioridade': 3, 'especialidade': 1, 'alocada': True
+    },
+    64: {'id': 64, 'sala': 1, 'horaInicio': 13, 'horaFim': 23, 'dia': 1, 'duracao': 10, 'cirurgiao': 1, 'diasEspera': 9, 'prioridade': 2, 'especialidade': 3, 'alocada': True
+    },
+    65: {'id': 65, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 10, 'cirurgiao': 2, 'diasEspera': 4, 'prioridade': 3, 'especialidade': 3, 'alocada': False
+    },
+    66: {'id': 66, 'sala': 0, 'horaInicio': 33, 'horaFim': 38, 'dia': 0, 'duracao': 6, 'cirurgiao': 7, 'diasEspera': 9, 'prioridade': 2, 'especialidade': 4, 'alocada': True
+    },
+    67: {'id': 67, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 12, 'cirurgiao': 1, 'diasEspera': 3, 'prioridade': 4, 'especialidade': 2, 'alocada': False
+    },
+    68: {'id': 68, 'sala': 2, 'horaInicio': 0, 'horaFim': 14, 'dia': 3, 'duracao': 15, 'cirurgiao': 1, 'diasEspera': 2, 'prioridade': 2, 'especialidade': 1, 'alocada': True
+    },
+    69: {'id': 69, 'sala': 0, 'horaInicio': 0, 'horaFim': 13, 'dia': 3, 'duracao': 14, 'cirurgiao': 6, 'diasEspera': 7, 'prioridade': 2, 'especialidade': 3, 'alocada': True
+    },
+    70: {'id': 70, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 15, 'cirurgiao': 10, 'diasEspera': 2, 'prioridade': 3, 'especialidade': 3, 'alocada': False
+    },
+    71: {'id': 71, 'sala': 1, 'horaInicio': 0, 'horaFim': 12, 'dia': 3, 'duracao': 13, 'cirurgiao': 9, 'diasEspera': 6, 'prioridade': 2, 'especialidade': 4, 'alocada': True
+    },
+    72: {'id': 72, 'sala': 1, 'horaInicio': 0, 'horaFim': 13, 'dia': 2, 'duracao': 14, 'cirurgiao': 9, 'diasEspera': 6, 'prioridade': 2, 'especialidade': 1, 'alocada': True
+    },
+    73: {'id': 73, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 15, 'cirurgiao': 6, 'diasEspera': 4, 'prioridade': 3, 'especialidade': 1, 'alocada': False
+    },
+    74: {'id': 74, 'sala': 1, 'horaInicio': 15, 'horaFim': 20, 'dia': 3, 'duracao': 6, 'cirurgiao': 7, 'diasEspera': 7, 'prioridade': 3, 'especialidade': 4, 'alocada': True
+    },
+    76: {'id': 76, 'sala': 0, 'horaInicio': 25, 'horaFim': 37, 'dia': 2, 'duracao': 13, 'cirurgiao': 2, 'diasEspera': 7, 'prioridade': 2, 'especialidade': 3, 'alocada': True
+    },
+    77: {'id': 77, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 8, 'cirurgiao': 7, 'diasEspera': 2, 'prioridade': 4, 'especialidade': 4, 'alocada': False
+    },
+    78: {'id': 78, 'sala': 0, 'horaInicio': 10, 'horaFim': 24, 'dia': 1, 'duracao': 14, 'cirurgiao': 8, 'diasEspera': 10, 'prioridade': 2, 'especialidade': 1, 'alocada': True
+    },
+    79: {'id': 79, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 8, 'cirurgiao': 9, 'diasEspera': 9, 'prioridade': 4, 'especialidade': 3, 'alocada': False
+    },
+    80: {'id': 80, 'sala': 3, 'horaInicio': 36, 'horaFim': 45, 'dia': 0, 'duracao': 10, 'cirurgiao': 3, 'diasEspera': 10, 'prioridade': 2, 'especialidade': 3, 'alocada': True
+    },
+    81: {'id': 81, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 12, 'cirurgiao': 2, 'diasEspera': 10, 'prioridade': 4, 'especialidade': 3, 'alocada': False
+    },
+    82: {'id': 82, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 15, 'cirurgiao': 1, 'diasEspera': 3, 'prioridade': 4, 'especialidade': 1, 'alocada': False
+    },
+    83: {'id': 83, 'sala': 3, 'horaInicio': 28, 'horaFim': 32, 'dia': 1, 'duracao': 5, 'cirurgiao': 6, 'diasEspera': 2, 'prioridade': 2, 'especialidade': 4, 'alocada': True
+    },
+    84: {'id': 84, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 10, 'cirurgiao': 4, 'diasEspera': 2, 'prioridade': 3, 'especialidade': 4, 'alocada': False
+    },
+    86: {'id': 86, 'sala': 0, 'horaInicio': 0, 'horaFim': 9, 'dia': 2, 'duracao': 10, 'cirurgiao': 6, 'diasEspera': 2, 'prioridade': 2, 'especialidade': 3, 'alocada': True
+    },
+    88: {'id': 88, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 15, 'cirurgiao': 1, 'diasEspera': 4, 'prioridade': 4, 'especialidade': 4, 'alocada': False
+    },
+    89: {'id': 89, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 6, 'cirurgiao': 4, 'diasEspera': 1, 'prioridade': 4, 'especialidade': 2, 'alocada': False
+    },
+    90: {'id': 90, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 6, 'cirurgiao': 3, 'diasEspera': 2, 'prioridade': 4, 'especialidade': 3, 'alocada': False
+    },
+    91: {'id': 91, 'sala': None, 'horaInicio': None, 'horaFim': None, 'dia': None, 'duracao': 15, 'cirurgiao': 1, 'diasEspera': 7, 'prioridade': 4, 'especialidade': 3, 'alocada': False
+    },
+    92: {'id': 92, 'sala': 0, 'horaInicio': 27, 'horaFim': 40, 'dia': 1, 'duracao': 14, 'cirurgiao': 9, 'diasEspera': 6, 'prioridade': 2, 'especialidade': 1, 'alocada': True
+    },
+    95: {'id': 95, 'sala': 3, 'horaInicio': 25, 'horaFim': 29, 'dia': 2, 'duracao': 5, 'cirurgiao': 2, 'diasEspera': 7, 'prioridade': 3, 'especialidade': 2, 'alocada': True
+    },
+    96: {'id': 96, 'sala': 0, 'horaInicio': 0, 'horaFim': 10, 'dia': 4, 'duracao': 11, 'cirurgiao': 6, 'diasEspera': 9, 'prioridade': 3, 'especialidade': 2, 'alocada': True
+    },
+    97: {'id': 97, 'sala': 1, 'horaInicio': 27, 'horaFim': 37, 'dia': 2, 'duracao': 11, 'cirurgiao': 3, 'diasEspera': 9, 'prioridade': 3, 'especialidade': 1, 'alocada': True
+    },
+    98: {'id': 98, 'sala': 3, 'horaInicio': 7, 'horaFim': 18, 'dia': 1, 'duracao': 12, 'cirurgiao': 10, 'diasEspera': 7, 'prioridade': 2, 'especialidade': 4, 'alocada': True
+    },
+    99: {'id': 99, 'sala': 0, 'horaInicio': 26, 'horaFim': 35, 'dia': 4, 'duracao': 10, 'cirurgiao': 7, 'diasEspera': 1, 'prioridade': 2, 'especialidade': 2, 'alocada': True
+    },
+    100: {'id': 100, 'sala': 1, 'horaInicio': 26, 'horaFim': 30, 'dia': 1, 'duracao': 5, 'cirurgiao': 2, 'diasEspera': 6, 'prioridade': 2, 'especialidade': 3, 'alocada': True
+    }
+}
