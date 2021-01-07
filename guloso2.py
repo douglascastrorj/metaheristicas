@@ -11,7 +11,7 @@ def getCoeficienteOrdenacao(cirurgia):
     penalidade = getPenalizacao(cirurgia['p'])
     diasEspera = cirurgia['w']
 
-    return float(penalidade) / diasEspera
+    return float(penalidade) / (diasEspera + 0.1)
 
 
 def ordenaCirurgias(cirurgias):    
@@ -46,6 +46,8 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
 
     especialidadesDaSalaNoDia = createEspecialidadesSalaDia(S, D)
 
+    popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0)
+    popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0)
     popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0)
     popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0)
     for d in range(0, D):
@@ -144,7 +146,7 @@ def popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidade
         # TODO: verificar qual Especialidade das cirurgias de P1 seria melhor
         for cirurgia in cirurgias_:
             podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][d], especialidadesDaSalaNoDia[s][d], medicSlotMap, False)
-            if podeAdicionar == False:
+            if podeAdicionar == False or cirurgia['p'] == 1 and d > 0:
                 continue
             
             #verificar se cirurgiao esta ocupado

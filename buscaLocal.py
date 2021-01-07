@@ -97,7 +97,7 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
 
     #print(cirurgias_)
     
-    compareF = lambda cirurgia : float(cirurgia['prioridade']) / (cirurgia['diasEspera'] * getPenalizacao(cirurgia['prioridade']))
+    compareF = lambda cirurgia : float(cirurgia['prioridade']) / ((cirurgia['diasEspera'] * getPenalizacao(cirurgia['prioridade'])) + 0.1)
     cirurgias_ = ordenaCirurgias(cirurgias_, compareF)
 
     # print(cirurgias_)
@@ -166,7 +166,7 @@ def removeCirurgias(params):
         return solucao
 
     cirurgias_ = mapToList(alocadas)
-    compareF = lambda cirurgia : float(cirurgia['prioridade']) / (cirurgia['diasEspera'] * getPenalizacao(cirurgia['prioridade']))
+    compareF = lambda cirurgia : float(cirurgia['prioridade']) / ((cirurgia['diasEspera'] * getPenalizacao(cirurgia['prioridade'])) + 0.1)
     cirurgias_ = ordenaCirurgias(cirurgias_, compareF)
     cirurgias_.reverse()
 
@@ -219,6 +219,9 @@ def realocarHorario(params):
     solucao = copy.deepcopy(params['solucao'])
 
     alocadas = filterBy(solucao, 'alocada', True)
+    if len(alocadas) == 0:
+        return solucao
+
     cirurgiaEscolhida = random.choice(list(alocadas.keys()))
     deslocamento = random.randint(1, 10)
     direcao = random.choice([1, -1])
@@ -227,6 +230,40 @@ def realocarHorario(params):
     solucao[cirurgiaEscolhida]['horaFim'] += deslocamento * direcao  
 
     return solucao
+
+def trocaP1PorD0(params):
+    solucao = copy.deepcopy(params['solucao'])
+
+    filterP1NaoAlocadas = lambda cirurgia : cirurgia['prioridade'] == 1 and cirurgia['alocada'] == False
+    naoAlocadasP1 = _filter(solucao, filterP1NaoAlocadas)
+
+    if len(naoAlocadasP1) == 0:
+        return solucao
+
+    filterAlocadasD0 = lambda cirurgia : cirurgia['dia'] == 0 and cirurgia['alocada'] == True and cirurgia['prioridade'] != 1
+    alocadasD0 = _filter(solucao, filterAlocadasD0)
+
+    if len(alocadasD0) == 0:
+        return solucao
+
+    cP1 = random.choice(list(naoAlocadasP1.keys()))
+    c2 = random.choice(list(alocadasD0.keys()))
+
+    solucao[cP1]['dia'] = solucao[c2]['dia']
+    solucao[cP1]['sala'] = solucao[c2]['sala']
+    solucao[cP1]['horaInicio'] = solucao[c2]['horaInicio']
+    solucao[cP1]['horaFim'] = solucao[c2]['horaInicio'] + solucao[cP1]['duracao'] - 1
+    solucao[cP1]['alocada'] = True
+
+    solucao[c2]['dia'] = None
+    solucao[c2]['sala'] = None
+    solucao[c2]['horaInicio'] = None
+    solucao[c2]['horaFim'] = None
+    solucao[c2]['alocada'] = False
+
+    return solucao
+
+
 
 def trocaCirurgiaMarcadaPorDuasCirurgiasListaEspera(params):
     solucao = copy.deepcopy(params['solucao'])
