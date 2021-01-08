@@ -79,6 +79,34 @@ def getSurgeriesBySpecialty(dataset, e):
     return surgeries
 
 
+def getHorasPorCirurgiao(solucao):
+    horasPorCirurgiao = {}
+    for c in solucao:
+        if solucao[c]['alocada'] == False:
+            continue
+
+        cirurgiao = solucao[c]['cirurgiao']
+        if cirurgiao not in list(horasPorCirurgiao.keys()):
+            # print(f'cirurgiao : {cirurgiao}')
+            horasPorCirurgiao[cirurgiao] = {
+                'dia': {
+                    0: 0,
+                    1: 0,
+                    2: 0,
+                    3: 0,
+                    4: 0
+                },
+                'horasSemana': 0
+            }
+
+           
+        d = solucao[c]['dia']
+        horasPorCirurgiao[cirurgiao]['dia'][d] += solucao[c]['duracao']
+        horasPorCirurgiao[cirurgiao]['horasSemana'] += solucao[c]['duracao']
+    return horasPorCirurgiao
+        
+
+
 def getDistinctSpecialtyArr(dataset):
     especialidadesDistintas = []
     for e in dataset['e']:
@@ -132,7 +160,13 @@ def createMedicSlotMap(cirurgias):
         cirurgia = cirurgias[cirurgiaId]
         
         medicSlotMap[cirurgia['h']] = {
-            'slotsDia': 0,
+            'slotsDia': {
+                0: 0,
+                1: 0,
+                2: 0,
+                3: 0,
+                4: 0,
+            },
             'slotsSemana': 0
         }
 

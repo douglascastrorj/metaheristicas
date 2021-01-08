@@ -20,7 +20,7 @@ def trocaCirurgiasMesmoDia(params):
     solucao = copy.deepcopy(params['solucao'])
 
     D = params['D']
-    d = random.randint(0, D - 1)
+    d = random.randint(0, D)
 
     cirurgiasD = filterBy(solucaoAnterior, 'dia', d)
     # #print(list(cirurgiasD.keys()))
@@ -231,6 +231,22 @@ def realocarHorario(params):
 
     return solucao
 
+def realocarDia(params):
+    solucao = copy.deepcopy(params['solucao'])
+
+    alocadas = filterBy(solucao, 'alocada', True)
+    if len(alocadas) == 0:
+        return solucao
+
+    cirurgiaEscolhida = random.choice(list(alocadas.keys()))
+    deslocamento = random.randint(1, 5)
+    direcao = random.choice([1, -1])
+
+    solucao[cirurgiaEscolhida]['dia'] += (deslocamento * direcao) % params['D']
+
+    return solucao
+
+
 def trocaP1PorD0(params):
     solucao = copy.deepcopy(params['solucao'])
 
@@ -262,6 +278,7 @@ def trocaP1PorD0(params):
     solucao[c2]['alocada'] = False
 
     return solucao
+
 
 
 

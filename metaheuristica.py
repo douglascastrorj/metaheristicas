@@ -107,8 +107,9 @@ def getLocalSearchFunctions(solucao, config, coef, beta):
         {'f': buscaLocal.trocaCirurgiasMesmoDia, 'params': {'solucao': solucao, 'D': config['D']}},
         {'f': buscaLocal.trocaCirurgiasDiasDiferente, 'params': {'solucao': solucao, 'D': config['D']}},
         {'f': buscaLocal.trocaCirurgiaMarcadaPorCirurgiaListaEspera, 'params': {'solucao': solucao}},
-        # {'f': buscaLocal.insercaoDeUmaOuMaisCirurgiasDaListaEspera, 'params': {'solucao': solucao, 'D': D, 'S': S, 'alpha': 0}},
+        # {'f': buscaLocal.insercaoDeUmaOuMaisCirurgiasDaListaEspera, 'params': {'solucao': solucao, 'D': config['D'], 'S': config['S'], 'alpha': beta}},
         {'f': buscaLocal.realocarHorario, 'params': {'solucao': solucao}},
+        {'f': buscaLocal.realocarDia, 'params': {'solucao': solucao, 'D': config['D']}},
         {'f': buscaLocal.removeCirurgias, 'params': {'solucao': solucao, 'alpha': coef}},
         {'f': buscaLocal.trocaP1PorD0, 'params': {'solucao': solucao}}
     ]
@@ -116,8 +117,9 @@ def getLocalSearchFunctions(solucao, config, coef, beta):
 
 def peteleco(solucao):
     print('\n\n\n\n\n\n PETELECO!! \n\n\n\n\n')
+    alocadas = filterBy(solucao,'alocada', True)
     s = copy.deepcopy(solucao) 
-    qtdARemover = random.randint(0, int(len(solucao) * 0.35))
+    qtdARemover = random.randint(0, int(len(alocadas) * 0.35))
     for i in range(0, qtdARemover):
         s = buscaLocal.removeCirurgias({'solucao': s, 'alpha': random.random()})
     return s

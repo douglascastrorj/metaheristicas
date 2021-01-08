@@ -16,7 +16,10 @@ def viavel(solucao, S, T, D, verbose=False):
     for c in solucao:
         cirurgia = solucao[c]
 
-        if cirurgia['alocada'] == True  and cirurgia['horaFim'] > T:
+        if cirurgia['alocada'] == True  and (cirurgia['dia'] < 0 or cirurgia['dia'] >= 5):
+            return False
+
+        if cirurgia['alocada'] == True  and (cirurgia['horaFim'] >= T  or cirurgia['horaInicio'] < 0):
             if verbose:
                 print('cirurgia com T > 46', cirurgia)
             return False

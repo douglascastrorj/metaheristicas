@@ -1,0 +1,19 @@
+
+- FO: expoente da primeira parcela penaliza quando cirurgia p1 é alocada
+
+perguntar sobre path relinking
+- precisa de fato da busca tabu ( poderia ser com outros tipos de busca )
+- o movimento proibido é exato ou pode ser mais generico (ex.: incluir cirurgia 2 na sala s dia d no slot t  /  incluir cirurgia 2) 
+- no caso de buscas locais que trocam elementos o movimento tabu seria exatamente os dois elementos quando estiverem em determinados dia sala e slots ?
+- para utilizar a busca tabu no simulated anealing seria apenas utilziar a busca tabu na etapa de buscar vizinho?
+- path relinking: oque exatamente seria um movimento da solucao guia?
+
+
+http://www.ic.uff.br/~celso/tttplots/index.html
+CRIAR VERSOS DIFERENTES PARA EXPERIMENTOS (COM PATH RELINKING E SEM)
+SALVAR PORQUE O ALGORITMO PAROU (ITER SEM MELHORAS FIM NORMAL ETC)
+NAO PRECISA DA BUSCA TABU
+CIRURGIAS P1 TEM Q SER TODAS SEGUNDA (MENSURAR NUMERO DE SALAS)  
+NO MINIMO 15 INSTANCIAS
+RODAR DE 5 A 10 VEZES PARA TIRAR METRICAS (MIN MAX MEDIA DESVIO PADRAO)  -  TABELA
+TTPLOT ESCOLHER ALGUMAS ( 3 ) INSTANCIAS DIFICEIS RODAR COM 50 REPLICACO50 VEZES E TIRAR AS MESMAS METRICAS
