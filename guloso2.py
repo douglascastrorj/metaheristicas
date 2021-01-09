@@ -1,9 +1,13 @@
 from utils import filterBy, filterNotBy, createDecisionDict, getDistinctSpecialtyArr2, createMedicSlotMap, createEspecialidadesSalaDia, mapToList, getPenalizacao, getIndexFromId 
 import numpy as np
 from operator import itemgetter
+import random
 
+
+# constantes diferentes para gerar solucoes mais vazias 
+# com o intuito das buscas locais aplicadas nas metaheuristicas gerarem menos solucoes inviaveis
 MAX_SLOTS_MEDICO_DIA = 24
-MAX_SLOTS_MEDICO_SEMANA = 100
+MAX_SLOTS_MEDICO_SEMANA = 80
 T = 46
 
 # argmax ( qtd(cirurgias e) / Sum(tc e) )
@@ -80,25 +84,24 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
 
     especialidadesDaSalaNoDia = createEspecialidadesSalaDia(S, D)
 
-    # densidades = getMelhorEspecialidadesParaAtender(cirurgiasP1, E)
-    # for i in range(0, len(densidades)):
-    #     bestE = np.argmax(densidades)    
-    #     cirurgiasBestE = filterBy(cirurgiasP1, 'e', bestE)
-    #     densidades[bestE] = 0
-    #     # print(densidades)
-    #     # print(np.argmin(densidades))
+    densidades = getMelhorEspecialidadesParaAtender(cirurgiasP1, E)
+    for i in range(0, len(densidades)):
+        bestE = np.argmax(densidades)    
+        cirurgiasBestE = filterBy(cirurgiasP1, 'e', bestE)
+        densidades[bestE] = 0
+        # print(densidades)
+        # print(np.argmin(densidades))
 
-    #     if len(cirurgiasBestE) == 0:
-    #         continue
+        if len(cirurgiasBestE) == 0:
+            continue
+
+        popularVariaveis(S, cirurgiasBestE, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0, cirurgias)
         
-    popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0)
-    popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0)
-    popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0)
+    # for e in E:
+    #     popularVariaveis(S, cirurgiasP1, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, 0, cirurgias)
     for d in range(0, D):
-        popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d)
-        popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d)
-        popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d)
-        popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d)
+        # for e in E:
+        popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d, cirurgias)
 
     
     #preencher z
@@ -106,7 +109,7 @@ def gerarSolucaoInicial(cirurgias, S, D, verbose = False):
         if c not in cirurgiasAtendidas:
             z[c] = 1
 
-    print(medicSlotMap)
+    # print(medicSlotMap)
 
     return Xcstd, yesd, z
 
@@ -198,7 +201,7 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
 
     return ocupado
 
-def popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d):
+def popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d, dataset):
     
     #ordenar com base em prioridade e diasEspera
     cirurgias_ = mapToList(cirurgias)
@@ -207,6 +210,7 @@ def popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidade
     for s in range(0, S):
         # TODO: verificar qual Especialidade das cirurgias de P1 seria melhor
         for cirurgia in cirurgias_:
+
             podeAdicionar = verificaSePodeAdicionar(cirurgia, cirurgiasAtendidas, tempoSalas[s][d], especialidadesDaSalaNoDia[s][d], medicSlotMap, False, d)
             if podeAdicionar == False or cirurgia['p'] == 1 and d > 0:
                 continue

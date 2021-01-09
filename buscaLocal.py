@@ -1,7 +1,7 @@
 import random 
 import copy
 
-from utils import filterBy, _filter, ordenaCirurgias, getPenalizacao, mapToList
+from utils import filterBy, _filter, ordenaCirurgias, getPenalizacao, mapToList, getHorasPorCirurgiao
 
 from fitness import viavel
 
@@ -144,7 +144,7 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
             solucao[cirurgia['id']] = cirurgia
 
             # print('inicio fim ', inicio, fim)
-            if viavel(solucao, params['S'], 46, params['D']) == False:
+            if viavel(solucao, params['S'], params['T'], params['D']) == False:
                 solucao = params['solucao']
                 continue
 
@@ -155,6 +155,35 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera(params):
 
     return params['solucao']
 
+
+
+def insercaoDeUmaOuMaisCirurgiasDaListaEspera2(params):
+    solucao = copy.deepcopy(params['solucao'])
+    
+    naoAlocadas = filterBy(solucao, 'alocada', False)
+    
+    c = random.choice(list(naoAlocadas.keys()))
+
+    diaInicial = 0
+    if solucao[c]['prioridade'] > 1:
+        diaInicial = 1
+
+    for s in range(0, params['S']):
+        for d in range(diaInicial, params['D']):
+            # nao tentar alocar p1 em outros dias
+            if solucao[c]['prioridade'] == 1 and d > 0:
+                return solucao
+
+            for t in range(0, params['T']):
+                alocarCirurgia(solucao, c, s, t, d)
+                if viavel(solucao, params['S'], params['T'], params['D']) == False:
+                    desalocarCirurgia(solucao, c)
+                else:
+                    # print(f'INSERCAO CIRURGIA {c}- SALA {s} SLOT {t} DIA {d}')
+                    return solucao
+
+
+    return solucao
 
 #sortear cirurgia a ser inserida de forma gulosa com base em um alpha (0 = totalmente aleatorio, 1 = totalmente guloso)
 def removeCirurgias(params):
@@ -239,7 +268,7 @@ def realocarDia(params):
         return solucao
 
     cirurgiaEscolhida = random.choice(list(alocadas.keys()))
-    deslocamento = random.randint(1, 5)
+    deslocamento = random.randint(1, 25)
     direcao = random.choice([1, -1])
 
     solucao[cirurgiaEscolhida]['dia'] += (deslocamento * direcao) % params['D']
@@ -280,6 +309,24 @@ def trocaP1PorD0(params):
     return solucao
 
 
+def desalocaNaoP1D0(params):
+    solucao = copy.deepcopy(params['solucao'])
+
+    filterNaoP1D0 = lambda cirurgia : cirurgia['alocada'] == True and cirurgia['dia'] == 0  and cirurgia['prioridade'] != 1
+    naoP1D0 = _filter(solucao, filterNaoP1D0)
+
+    if len(naoP1D0) == 0:
+        return solucao
+
+    c = random.choice(list(naoP1D0.keys()))
+
+    solucao[c]['dia'] = None
+    solucao[c]['sala'] = None
+    solucao[c]['horaInicio'] = None
+    solucao[c]['horaFim'] = None
+    solucao[c]['alocada'] = False
+
+    return solucao 
 
 
 def trocaCirurgiaMarcadaPorDuasCirurgiasListaEspera(params):
@@ -297,3 +344,93 @@ def trocaDuasCirurgiasMarcadasPorDuasCirurgiasListaEspera(params):
 def trocaDuasFimSemanaPorUmaInicioSemana(params):
     solucao = copy.deepcopy(params['solucao'])
     return solucao
+
+
+def removeOciosidadeCirurgiao(params):
+    solucaoCpy = copy.deepcopy(params['solucao'])
+
+    horasCirurgioesSolucaoElite = getHorasPorCirurgiao(solucaoCpy)
+    filterF = lambda cirurgiao : cirurgiao['horasSemana'] < 80
+    horasCirurgioesSolucaoElite = _filter(horasCirurgioesSolucaoElite, filterF)
+    # print(horasCirurgioesSolucaoElite)
+
+    cirurgiao = random.choice(list(horasCirurgioesSolucaoElite.keys()))
+
+    filterF = lambda cirurgia : cirurgia['alocada'] == False and cirurgia['cirurgiao'] == cirurgiao
+    cirurgiasDoCirurgiao = _filter(solucaoCpy, filterF)
+
+    if len(cirurgiasDoCirurgiao) == 0:
+        return solucaoCpy
+
+    c = random.choice(list(cirurgiasDoCirurgiao.keys()))
+
+    if solucaoCpy[c]['cirurgiao'] == cirurgiao:
+        for d in range(0, params['D']):
+            for s in range(0, params['S']):
+                for t in range(0, params['T'] - solucaoCpy[c]['duracao']):
+                    if solucaoCpy[c]['alocada'] == True:
+                        continue
+                    alocarCirurgia(solucaoCpy, c, s, t, d)
+                    if viavel(solucaoCpy, params['S'], params['T'], params['D'] ) == False:
+                        desalocarCirurgia(solucaoCpy, c)
+                    else:
+                        # print('BUSCA LOCAL conseguiu alocar cirurgia de cirurgiao ocioso')
+                        # print(f'Cirurgia {c} Cirurgiao {cirurgiao}')
+                        return solucaoCpy
+                        
+
+    return solucaoCpy
+
+def antecipaPrioridadeMaisBaixa(params):
+
+    # print('antecipa cirurgia mais baixa')
+    solucao = copy.deepcopy(params['solucao'])
+    solucaoAnterior = copy.deepcopy(params['solucao'])
+
+    filterAlocadasNaoP1 = lambda cirurgia : cirurgia['alocada'] == True and cirurgia['prioridade'] != 1
+    alocadasNaoP1 = _filter(solucao, filterAlocadasNaoP1)
+
+    if len(alocadasNaoP1) == 0:
+        return solucao
+
+    c1 = random.choice(list(alocadasNaoP1.keys()))
+
+    filterPrioridadeMaissBaixa = lambda cirurgia : cirurgia['alocada'] == True and cirurgia['prioridade'] != 1 and cirurgia['prioridade'] >= solucao[c1]['prioridade'] and cirurgia['especialidade'] == solucao[c1]['especialidade'] and cirurgia['dia'] < solucao[c1]['dia']
+    prioridadesMaisBaixa = _filter(solucao, filterPrioridadeMaissBaixa)
+
+    if len(prioridadesMaisBaixa) == 0:
+        return solucao
+
+    c2 = random.choice(list(prioridadesMaisBaixa.keys()))
+
+    solucao[c1]['horaInicio'] = solucaoAnterior[c2]['horaInicio']
+    solucao[c1]['horaFim'] = solucaoAnterior[c2]['horaInicio'] + solucaoAnterior[c1]['duracao']
+    solucao[c1]['dia'] = solucaoAnterior[c2]['dia']
+    solucao[c1]['sala'] = solucaoAnterior[c2]['sala']
+
+    solucao[c2]['horaInicio'] = solucaoAnterior[c1]['horaInicio']
+    solucao[c2]['horaFim'] = solucaoAnterior[c1]['horaInicio'] + solucaoAnterior[c2]['duracao']
+    solucao[c2]['dia'] = solucaoAnterior[c1]['dia']
+    solucao[c2]['sala'] = solucaoAnterior[c1]['sala']
+
+    if viavel(solucao, params['S'], params['T'], params['D'] ) == False:
+        return solucaoAnterior
+
+    return solucao
+
+# funcoes auxiliares
+
+def alocarCirurgia(solucao, idCirurgia, s, t, d):
+    solucao[idCirurgia]['dia'] = d
+    solucao[idCirurgia]['sala'] = s
+    solucao[idCirurgia]['horaInicio'] = t
+    solucao[idCirurgia]['horaFim'] = t + solucao[idCirurgia]['duracao']
+    solucao[idCirurgia]['alocada'] = True
+
+
+def desalocarCirurgia(solucao, idCirurgia):
+    solucao[idCirurgia]['dia'] = None
+    solucao[idCirurgia]['sala'] = None
+    solucao[idCirurgia]['horaInicio'] = None
+    solucao[idCirurgia]['horaFim'] = None
+    solucao[idCirurgia]['alocada'] = False

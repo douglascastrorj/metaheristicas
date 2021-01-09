@@ -25,10 +25,14 @@ def viavel(solucao, S, T, D, verbose=False):
             return False
 
         if cirurgia['prioridade'] == 1:
-            if  cirurgia['alocada'] == True and cirurgia['dia'] > 0:
+            if  cirurgia['alocada'] == True and cirurgia['dia'] > 0 :
                 if verbose:
                     print('cirurgia p1 alocada em outro dia', cirurgia)
                 return False
+            # if  cirurgia['alocada'] == False:
+            #     if verbose:
+            #         print('cirurgia p1nao alocada', cirurgia)
+            #     return False
 
     #verifica perdiodo de higienizacao entre cirurgias
     for d in range(0, D):
@@ -38,6 +42,7 @@ def viavel(solucao, S, T, D, verbose=False):
             cirurgiasDiaSala = mapToList(cirurgiasDiaSala)
             getValor = lambda cirurgia : cirurgia['horaFim']
             cirurgiasDiaSala = ordenaCirurgias(cirurgiasDiaSala, getValor)
+            # print('CIRURGIAS DIA SALA \n', cirurgiasDiaSala)
             for cirurgiaAnterior, cirurgiaCorrente in zip(cirurgiasDiaSala, cirurgiasDiaSala[1:]):
                 if cirurgiaCorrente['horaInicio'] - cirurgiaAnterior['horaFim'] < 3:
                     if verbose:

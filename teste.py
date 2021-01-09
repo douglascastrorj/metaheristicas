@@ -10,7 +10,7 @@ import plot
 from time import time
 
 
-S = 7
+S = 10
 T = 46
 D = 5
 
@@ -22,42 +22,72 @@ config = {
 
 REPLICACOES = 1
 
-dataset = readDataset('dataset/i100p115percent.csv')
-cirurgias = createMap(dataset)
 
-# cirurgias = gerarInstancia(N=50, H=10, E=4)
-# cirurgias = gerarInstancia(N=20, H=5, E=4)
+instancias = [
+    # { 'path': 'instancias/i1.csv',   'S': 2 },
+    # { 'path': 'instancias/i2.csv',   'S': 2 },
+    # { 'path': 'instancias/i3.csv',   'S': 2 },
+    # { 'path': 'instancias/i4.csv',   'S': 2 },
+    # { 'path': 'instancias/i5.csv',   'S': 6 },
+    # { 'path': 'instancias/i6.csv',   'S': 8 },
+    # { 'path': 'instancias/i7.csv',   'S': 3 },
+    # { 'path': 'instancias/i8.csv',   'S': 7 },
+    # { 'path': 'instancias/i9.csv',   'S': 6 },
+    # { 'path': 'instancias/i10.csv',   'S': 10 },
+    # { 'path': 'instancias/i11.csv',   'S': 15 },
+    # { 'path': 'instancias/i12.csv',   'S': 3 },
+    # { 'path': 'instancias/i13.csv',   'S': 4 },
+    { 'path': 'instancias/i14.csv',   'S': 7 }
+]
 
-FOS = []
-times = []
-for i in range(0, REPLICACOES):
+# f = open('output_replicacoes.txt', 'w')
 
-    start = time()
-    xcstd, yesd, z = gerarSolucaoInicial(cirurgias, S, D, verbose=True)
+# v = viavel(solucao, S, T, D, verbose=True)
+# print(f'Viavel: {v}')
 
-    solucao = xcstdToMap(xcstd, cirurgias)
-    v = viavel(solucao, S, T, D, verbose=True)
+for instancia in instancias:
 
-    print(solucao)
-    print(f'FO Inicial: {FO2(solucao)} - Viavel: {v }')
-    # print(getHorasPorCirurgiao(solucao))
+    config['S'] = instancia['S']
+    dataset = readDataset(instancia['path'])
+    cirurgias = createMap(dataset)
 
-    best = simulatedAnealing(solucao, config, FO2, SAmax=250, T0=300, alpha=0.6, verbose=False, maxPetelecos=1)
+    # cirurgias = gerarInstancia(N=50, H=10, E=4)
+    # cirurgias = gerarInstancia(N=20, H=5, E=4)
 
-    end = time()
+    FOS = []
+    times = []
+    for i in range(0, REPLICACOES):
 
-    fobest = FO2(best)
-    FOS.append(fobest)
-    times.append(end - start)
+        start = time()
+        xcstd, yesd, z = gerarSolucaoInicial(cirurgias, S, D, verbose=False)
 
-    
+        solucao = xcstdToMap(xcstd, cirurgias)
+        v = viavel(solucao, S, T, D, verbose=True)
 
-    print(best)
-    print(f'\n\n(SOLUCAO INICIAL) FO = {FO2(solucao)}  - Viavel: {viavel(solucao, S, T, D)} \n\n')
-    print(f'(MELHOR SOLUCAO) FO = {FO2(best)}  - Viavel: {viavel(best, S, T, D)} \n\n')
+        # print(solucao)
+        print(f'FO Inicial: {FO2(solucao)} - Viavel: {v }')
+        # print(getHorasPorCirurgiao(solucao))
 
-    plot.exportGradeHorarios(best, config)
+        best = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=True, maxPetelecos=0, pathrelinking=False)
 
-    print(getHorasPorCirurgiao(best))
+        end = time()
 
-print(f'FO Media: {np.array(FOS).mean()} - tempo medio: {np.array(times).mean()}')
+        fobest = FO2(best)
+        FOS.append(fobest)
+        times.append(end - start)
+
+        
+
+        print(best)
+        print(f'REPLICACAO: {i} - Instancia: {instancia["path"]} - S: {instancia["S"]}')
+        print(f'\n\n(SOLUCAO INICIAL) FO = {FO2(solucao)}  - Viavel: {viavel(solucao, S, T, D)} \n\n')
+        print(f'(MELHOR SOLUCAO) FO = {FO2(best)}  - Viavel: {viavel(best, S, T, D)} \n\n')
+
+        plot.exportGradeHorarios(best, config)
+
+        print(getHorasPorCirurgiao(best))
+
+    print(f'FO Media: {np.array(FOS).mean()} - tempo medio: {np.array(times).mean()}')
+
+    # f.write(f'REPLICACOES: {REPLICACOES} - Instancia: {instancia["path"]} - S: {instancia["S"]}')
+    # f.write(f'FO Media: {np.array(FOS).mean()} - tempo medio: {np.array(times).mean()}\n\n')

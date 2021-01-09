@@ -45,4 +45,4 @@ def saveInstancia(cirurgias):
     f.close()
 
 if __name__ == "__main__":
-    saveInstancia( gerarInstancia(N=80, H=20, E=7) )
+    saveInstancia( gerarInstancia(N=200, H=40, E=8, percentP1=0.04) )

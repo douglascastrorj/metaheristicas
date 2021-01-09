@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import random
 
 def readDataset(path):
     df = pd.read_csv(path, delimiter=';')
@@ -140,7 +141,9 @@ def getPenalizacao(prioridade):
 
 def createMap(dataset):
     _map = {}
-    for indice in range(0, len(dataset['c'])):
+    cs = [indice for indice in range(0, len(dataset['c']))]
+    random.shuffle(cs)
+    for indice in cs:
         idCirurgia = dataset['c'][indice]
         cirurgia = {
             "c": idCirurgia,
