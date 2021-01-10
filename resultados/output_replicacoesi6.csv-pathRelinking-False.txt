@@ -1,0 +1,2 @@
+REPLICACOES: 5 - Instancia: instancias/i6.csv - S: 8FO Media: 1951103.2 - tempo medio: 203.36368336677552
+

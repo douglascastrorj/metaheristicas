@@ -1,0 +1,2 @@
+REPLICACOES: 5 - Instancia: instancias/i12.csv - S: 3FO Media: 32999.2 - tempo medio: 53.29893236160278
+

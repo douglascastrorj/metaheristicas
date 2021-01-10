@@ -1,28 +1,28 @@
-REPLICACOES: 5 - Instancia: instancias/i1.csv - S: 2FO Media: 260933.8 - tempo medio: 3,6751845359802244
+REPLICACOES: 5 - Instancia: instancias/i1.csv - S: 2FO Media: 261064.4 - tempo medio: 0.9864174365997315
 
-REPLICACOES: 5 - Instancia: instancias/i2.csv - S: 2FO Media: 67086.6 - tempo medio: 1,4414100646972656
+REPLICACOES: 5 - Instancia: instancias/i2.csv - S: 2FO Media: 53308.0 - tempo medio: 1.4553571701049806
 
-REPLICACOES: 5 - Instancia: instancias/i3.csv - S: 2FO Media: 400655.0 - tempo medio: 5,334362745285034
+REPLICACOES: 5 - Instancia: instancias/i3.csv - S: 2FO Media: 387604.8 - tempo medio: 12.047664499282837
 
-REPLICACOES: 5 - Instancia: instancias/i4.csv - S: 2FO Media: 1563542.6 - tempo medio: 4,414056634902954
+REPLICACOES: 5 - Instancia: instancias/i4.csv - S: 2FO Media: 1544103.8 - tempo medio: 20.268602800369262
 
-REPLICACOES: 5 - Instancia: instancias/i5.csv - S: 6FO Media: 1590390.0 - tempo medio: 43,913014554977416
+REPLICACOES: 5 - Instancia: instancias/i5.csv - S: 6FO Media: 1524890.8 - tempo medio: 186.68502225875855
 
-REPLICACOES: 5 - Instancia: instancias/i6.csv - S: 8FO Media: 2174808.2 - tempo medio: 10,498351764678954
+REPLICACOES: 5 - Instancia: instancias/i6.csv - S: 8FO Media: 1951417.0 - tempo medio: 183.21965355873107
 
-REPLICACOES: 5 - Instancia: instancias/i7.csv - S: 3FO Media: 15866.0 - tempo medio: 5,516853857040405
+REPLICACOES: 5 - Instancia: instancias/i7.csv - S: 3FO Media: 19032.0 - tempo medio: 18.750073528289796
 
-REPLICACOES: 5 - Instancia: instancias/i8.csv - S: 7FO Media: 61110.4 - tempo medio: 16,61235942840576
+REPLICACOES: 5 - Instancia: instancias/i8.csv - S: 7FO Media: 49972.6 - tempo medio: 142.02705125808717
 
-REPLICACOES: 5 - Instancia: instancias/i9.csv - S: 6FO Media: 48386.4 - tempo medio: 13,251812553405761
+REPLICACOES: 5 - Instancia: instancias/i9.csv - S: 6FO Media: 40428.0 - tempo medio: 6.842437314987182
 
-REPLICACOES: 5 - Instancia: instancias/i10.csv - S: 10FO Media: 141321.2 - tempo medio: 35,492185068130496
+REPLICACOES: 5 - Instancia: instancias/i10.csv - S: 10FO Media: 205201.0 - tempo medio: 177.64417762756347
 
-REPLICACOES: 5 - Instancia: instancias/i11.csv - S: 15FO Media: 146255.4 - tempo medio: 124,56513018608094
+REPLICACOES: 5 - Instancia: instancias/i11.csv - S: 15FO Media: 167481.8 - tempo medio: 254.5920808315277
 
-REPLICACOES: 5 - Instancia: instancias/i12.csv - S: 3FO Media: 34220.8 - tempo medio: 8,526962041854858
+REPLICACOES: 5 - Instancia: instancias/i12.csv - S: 3FO Media: 34129.6 - tempo medio: 38.99660663604736
 
-REPLICACOES: 5 - Instancia: instancias/i13.csv - S: 4FO Media: 68289.2 - tempo medio: 8,375707149505615
+REPLICACOES: 5 - Instancia: instancias/i13.csv - S: 4FO Media: 33310.6 - tempo medio: 42.58964920043945
 
-REPLICACOES: 5 - Instancia: instancias/i14.csv - S: 7FO Media: 99895.8 - tempo medio: 10,530864572525024
+REPLICACOES: 5 - Instancia: instancias/i14.csv - S: 7FO Media: 26165.0 - tempo medio: 113.93256635665894
 

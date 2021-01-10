@@ -1,6 +1,7 @@
 import random 
 import copy
-
+import numpy as np
+import math
 from utils import filterBy, _filter, ordenaCirurgias, getPenalizacao, mapToList, getHorasPorCirurgiao
 
 from fitness import viavel
@@ -161,6 +162,9 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera2(params):
     solucao = copy.deepcopy(params['solucao'])
     
     naoAlocadas = filterBy(solucao, 'alocada', False)
+
+    if len(naoAlocadas) == 0:
+        return solucao
     
     c = random.choice(list(naoAlocadas.keys()))
 
@@ -182,6 +186,49 @@ def insercaoDeUmaOuMaisCirurgiasDaListaEspera2(params):
                     # print(f'INSERCAO CIRURGIA {c}- SALA {s} SLOT {t} DIA {d}')
                     return solucao
 
+
+    return solucao
+
+def insereEmSalaDiaOcioso(params):
+    solucao = copy.deepcopy(params['solucao'])
+    
+    naoAlocadas = filterBy(solucao, 'alocada', False)
+
+    if len(naoAlocadas) == 0:
+        return solucao
+    
+    c = random.choice(list(naoAlocadas.keys()))
+    tempoSalas = np.zeros((params['S'], params['D']))
+
+    for s in range(0, params['S']):
+        for d in range(0, params['D']):
+            filterAlocadasDiaSala = lambda cirurgia : cirurgia['alocada'] == True and  cirurgia['dia'] == d  and cirurgia['sala'] == s
+            alocadasDiaSala = _filter(solucao, filterAlocadasDiaSala)
+            for c in alocadasDiaSala:
+                tempoSalas[s][d] += alocadasDiaSala[c]['duracao']
+
+    lista = []     
+    for s in range(0, params['S']):
+        for d in range(0, params['D']):
+            lista.append({'sala': s, 'dia': d, 'slotsOcupados': tempoSalas[s][d] })
+    
+    listaOrdenada = sorted(lista, key=lambda item: item['slotsOcupados'])
+    sliceIndex = math.ceil(len(listaOrdenada) / 2) 
+
+    listaCortada = listaOrdenada[:sliceIndex]
+    
+    item = random.choice(listaCortada)
+
+    d = item['dia']
+    s = item['sala']
+
+    for t in range(0, params['T'] - solucao[c]['duracao'] ):
+        alocarCirurgia(solucao, c, s, t, d)
+        if viavel(solucao, params['S'], params['T'], params['D']) == False:
+            desalocarCirurgia(solucao, c)
+        else:
+            # print(f'INSERCAO CIRURGIA {c}- SALA {s} SLOT {t} DIA {d}')
+            return solucao
 
     return solucao
 

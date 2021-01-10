@@ -1,0 +1,2 @@
+REPLICACOES: 5 - Instancia: instancias/i11.csv - S: 15FO Media: 169456.8 - tempo medio: 356.866641330719
+

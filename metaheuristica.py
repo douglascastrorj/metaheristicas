@@ -38,8 +38,12 @@ def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, 
 
             delta = foS1 - foCorrente
             x = random.random()
+
+            isViavel = viavel(s1, config['S'], config['T'], config['D'])
             # print(f'T: {T} delta {delta} e**(-delta/T): {e**(-delta/T)} x: {x}, x < e**(-delta/T): {x < e**(-delta/T)}')
-            if viavel(s1, config['S'], config['T'], config['D']) == True:
+            # print(f'busca local gerou solucao viavel: {isViavel}')
+            if isViavel:
+                # print('solucao aceita')
                 if delta < 0:
                     solucaoCorrente = copy.deepcopy(s1)
                     if foS1 < foBest:
@@ -118,7 +122,8 @@ def getLocalSearchFunctions(solucao, config, coef, beta):
             {'f': buscaLocal.removeCirurgias, 'params': {'solucao': solucao, 'alpha': coef}},
             {'f': buscaLocal.trocaP1PorD0, 'params': {'solucao': solucao}},
             {'f': buscaLocal.removeOciosidadeCirurgiao, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}},
-            {'f': buscaLocal.antecipaPrioridadeMaisBaixa, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}}
+            {'f': buscaLocal.antecipaPrioridadeMaisBaixa, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}},
+            {'f': buscaLocal.insereEmSalaDiaOcioso, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}}
         ]
 
     return [
@@ -132,7 +137,8 @@ def getLocalSearchFunctions(solucao, config, coef, beta):
         {'f': buscaLocal.trocaP1PorD0, 'params': {'solucao': solucao}},
         {'f': buscaLocal.desalocaNaoP1D0, 'params': {'solucao': solucao}},
         {'f': buscaLocal.removeOciosidadeCirurgiao, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}},
-        {'f': buscaLocal.antecipaPrioridadeMaisBaixa, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}}
+        {'f': buscaLocal.antecipaPrioridadeMaisBaixa, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}},
+        {'f': buscaLocal.insereEmSalaDiaOcioso, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}}
     ]
 
 

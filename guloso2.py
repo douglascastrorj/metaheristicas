@@ -163,16 +163,17 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
     }
     
     for c in Xcstd:
-        if c not in cirurgias:
-            continue
+        # if c not in cirurgias:
+        #     continue
 
         cirurgiaCorrente = cirurgias[c]
         if cirurgiaCorrente['h'] != cirurgiao:
             continue
         # 7 -11
         # 0 - 10
-        
+        # print(c)
         for s in Xcstd[c]:
+            
             for t_ in Xcstd[c][s]:
                 if Xcstd[c][s][t_][d] == 1:
                     inicioCirurgiaCorrente = t_
@@ -182,6 +183,8 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
                         ocupado['inicio'] = inicioCirurgiaCorrente
                         ocupado['fim'] = fimCirurgiaCorrente
                         ocupado['ocupado'] = True
+
+                    return ocupado
 
   
                     # if inicioCirurgia <= inicioCirurgiaCorrente and fimCirurgia >= inicioCirurgiaCorrente:
@@ -195,10 +198,7 @@ def cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, t, d):
                     #     ocupado['fim'] = fimCirurgiaCorrente
                     #     ocupado['ocupado'] = True
 
-                        return ocupado
-
-                    break
-
+                        
     return ocupado
 
 def popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidadesDaSalaNoDia, medicSlotMap, Xcstd, yesd, d, dataset):
@@ -215,8 +215,13 @@ def popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidade
             if podeAdicionar == False or cirurgia['p'] == 1 and d > 0:
                 continue
             
+
+            # if cirurgia['c'] == 77 or cirurgia['c'] == 107:
+            #     print(cirurgia['c'])
+            #     print('slot inicio', tempoSalas[s][d])
+            #     print('dia ', d)
             #verificar se cirurgiao esta ocupado
-            ocupadoNoPeriodo = cirurgiaoOcupadoNoPeriodo(cirurgias, cirurgia, Xcstd, tempoSalas[s][d], d)
+            ocupadoNoPeriodo = cirurgiaoOcupadoNoPeriodo(dataset, cirurgia, Xcstd, tempoSalas[s][d], d)
             if ocupadoNoPeriodo['ocupado']:
                 # print('(solucao inicial) o cirurgiao esta ocupado')
                 continue

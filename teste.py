@@ -1,5 +1,6 @@
 from utils import readDataset, createMap, filterBy, getDistinctSpecialtyArr, xcstdToMap, desalocarCirurgia, getHorasPorCirurgiao
-from guloso2 import gerarSolucaoInicial
+import guloso2 
+import guloso3
 from fitness import fitnessFunction, FO2, viavel
 from buscaLocal import trocaCirurgiasMesmoDia, trocaCirurgiasDiasDiferente, insercaoDeUmaOuMaisCirurgiasDaListaEspera, removeCirurgias
 from metaheuristica import simulatedAnealing
@@ -9,45 +10,45 @@ import numpy as np
 import plot
 from time import time
 
-
-S = 10
 T = 46
 D = 5
 
-config = {
-    'S': S,
-    'T': T,
-    'D': D
-}
 
-REPLICACOES = 1
+REPLICACOES = 5
 
 
 instancias = [
-    # { 'path': 'instancias/i1.csv',   'S': 2 },
-    # { 'path': 'instancias/i2.csv',   'S': 2 },
-    # { 'path': 'instancias/i3.csv',   'S': 2 },
-    # { 'path': 'instancias/i4.csv',   'S': 2 },
-    # { 'path': 'instancias/i5.csv',   'S': 6 },
-    # { 'path': 'instancias/i6.csv',   'S': 8 },
-    # { 'path': 'instancias/i7.csv',   'S': 3 },
-    # { 'path': 'instancias/i8.csv',   'S': 7 },
-    # { 'path': 'instancias/i9.csv',   'S': 6 },
-    # { 'path': 'instancias/i10.csv',   'S': 10 },
-    # { 'path': 'instancias/i11.csv',   'S': 15 },
-    # { 'path': 'instancias/i12.csv',   'S': 3 },
-    # { 'path': 'instancias/i13.csv',   'S': 4 },
+    { 'path': 'instancias/i1.csv',   'S': 2 },
+    { 'path': 'instancias/i2.csv',   'S': 2 },
+    { 'path': 'instancias/i3.csv',   'S': 2 },
+    { 'path': 'instancias/i4.csv',   'S': 2 },
+    { 'path': 'instancias/i5.csv',   'S': 6 },
+    { 'path': 'instancias/i6.csv',   'S': 8 },
+    { 'path': 'instancias/i7.csv',   'S': 3 },
+    { 'path': 'instancias/i8.csv',   'S': 7 },
+    { 'path': 'instancias/i9.csv',   'S': 6 },
+    { 'path': 'instancias/i10.csv',   'S': 10 },
+    { 'path': 'instancias/i11.csv',   'S': 15 },
+    { 'path': 'instancias/i12.csv',   'S': 3 },
+    { 'path': 'instancias/i13.csv',   'S': 4 },
     { 'path': 'instancias/i14.csv',   'S': 7 }
 ]
 
-# f = open('output_replicacoes.txt', 'w')
+
 
 # v = viavel(solucao, S, T, D, verbose=True)
 # print(f'Viavel: {v}')
 
+pathRelinking = False
 for instancia in instancias:
 
-    config['S'] = instancia['S']
+    f = open(f'resultados/output_replicacoes{instancia["path"].split("/")[1]}-pathRelinking-{pathRelinking}.txt', 'w')
+        
+    config = {
+        'S': instancia['S'],
+        'T': T,
+        'D': D
+    }
     dataset = readDataset(instancia['path'])
     cirurgias = createMap(dataset)
 
@@ -59,16 +60,26 @@ for instancia in instancias:
     for i in range(0, REPLICACOES):
 
         start = time()
-        xcstd, yesd, z = gerarSolucaoInicial(cirurgias, S, D, verbose=False)
-
+        print('gerando solucao inicial')
+        xcstd, _, _ = guloso2.gerarSolucaoInicial(cirurgias, config['S'], config['D'])
         solucao = xcstdToMap(xcstd, cirurgias)
-        v = viavel(solucao, S, T, D, verbose=True)
+        # v = viavel(solucao,  config['S'], config['T'], config['D'], verbose=True)
+        # if v == False:
+        #     print('metodo legado falhou gerando por segundo metodo')
+        # solucao = guloso3.gerarSolucaoInicial(cirurgias, config, verbose=False)
 
-        # print(solucao)
+        
+        v = viavel(solucao,  config['S'], config['T'], config['D'], verbose=False)
+        if v == False:
+            while v == False:
+                v = viavel(solucao,  config['S'], config['T'], config['D'], verbose=False , removeCirurgiaInviavel=True)
+                print('removendo cirurgia inviavel')
+
         print(f'FO Inicial: {FO2(solucao)} - Viavel: {v }')
         # print(getHorasPorCirurgiao(solucao))
 
-        best = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=True, maxPetelecos=0, pathrelinking=False)
+        print('executando simulated anealing')
+        best = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, pathrelinking=pathRelinking)
 
         end = time()
 
@@ -80,14 +91,19 @@ for instancia in instancias:
 
         print(best)
         print(f'REPLICACAO: {i} - Instancia: {instancia["path"]} - S: {instancia["S"]}')
-        print(f'\n\n(SOLUCAO INICIAL) FO = {FO2(solucao)}  - Viavel: {viavel(solucao, S, T, D)} \n\n')
-        print(f'(MELHOR SOLUCAO) FO = {FO2(best)}  - Viavel: {viavel(best, S, T, D)} \n\n')
+        print(f'\n\n(SOLUCAO INICIAL) FO = {FO2(solucao)}  - Viavel: {viavel(solucao, config["S"], config["T"], config["D"])} \n\n')
+        print(f'(MELHOR SOLUCAO) FO = {FO2(best)}  - Viavel: {viavel(best, config["S"], config["T"],config["D"], verbose=False)} \n\n')
 
         plot.exportGradeHorarios(best, config)
 
         print(getHorasPorCirurgiao(best))
 
     print(f'FO Media: {np.array(FOS).mean()} - tempo medio: {np.array(times).mean()}')
+    print(f'FO Desvio: {np.array(FOS).std()} - tempo desvio: {np.array(times).std()}')
+    print(f'FO Mediana: {np.median(FOS)} - tempo mediana: {np.median(times)}')
+    print(f'FO min: {np.array(FOS).min()} - tempo min: {np.array(times).min()}')
+    print(f'FO max: {np.array(FOS).max()} - tempo max: {np.array(times).max()}')
 
-    # f.write(f'REPLICACOES: {REPLICACOES} - Instancia: {instancia["path"]} - S: {instancia["S"]}')
-    # f.write(f'FO Media: {np.array(FOS).mean()} - tempo medio: {np.array(times).mean()}\n\n')
+    f.write(f'REPLICACOES: {REPLICACOES} - Instancia: {instancia["path"]} - S: {instancia["S"]}')
+    f.write(f'FO Media: {np.array(FOS).mean()} - tempo medio: {np.array(times).mean()}\n\n')
+    f.close()

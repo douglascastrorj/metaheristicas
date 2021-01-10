@@ -302,5 +302,13 @@ def desalocarCirurgia(solucao, cirurgiaId):
     solucao[cirurgiaId]['alocada'] = False
     solucao[cirurgiaId]['dia'] = None
     solucao[cirurgiaId]['sala'] = None
-    del solucao[cirurgiaId]['horaInicio']
-    del solucao[cirurgiaId]['horaFim']
+    solucao[cirurgiaId]['horaInicio'] = None
+    solucao[cirurgiaId]['horaFim'] = None
+
+
+def alocarCirurgia(solucao, idCirurgia, s, t, d):
+    solucao[idCirurgia]['dia'] = d
+    solucao[idCirurgia]['sala'] = s
+    solucao[idCirurgia]['horaInicio'] = t
+    solucao[idCirurgia]['horaFim'] = t + solucao[idCirurgia]['duracao']
+    solucao[idCirurgia]['alocada'] = True

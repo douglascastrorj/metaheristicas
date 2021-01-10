@@ -1,9 +1,9 @@
-from utils import filterBy, filterNotBy, getPenalizacao, _filter, overlap, mapToList, ordenaCirurgias
+from utils import filterBy, filterNotBy, getPenalizacao, _filter, overlap, mapToList, ordenaCirurgias, desalocarCirurgia
 
 MAX_SLOTS_MEDICO_DIA = 24
 MAX_SLOTS_MEDICO_SEMANA = 100
 
-def viavel(solucao, S, T, D, verbose=False):
+def viavel(solucao, S, T, D, verbose=False, removeCirurgiaInviavel=False):
     cirurgioes = []
     especialidades = []
     for c in solucao:
@@ -17,17 +17,23 @@ def viavel(solucao, S, T, D, verbose=False):
         cirurgia = solucao[c]
 
         if cirurgia['alocada'] == True  and (cirurgia['dia'] < 0 or cirurgia['dia'] >= 5):
+            if removeCirurgiaInviavel:
+                desalocarCirurgia(solucao, cirurgia['id'])
             return False
 
         if cirurgia['alocada'] == True  and (cirurgia['horaFim'] >= T  or cirurgia['horaInicio'] < 0):
             if verbose:
                 print('cirurgia com T > 46', cirurgia)
+            if removeCirurgiaInviavel:
+                desalocarCirurgia(solucao, cirurgia['id'])
             return False
 
         if cirurgia['prioridade'] == 1:
             if  cirurgia['alocada'] == True and cirurgia['dia'] > 0 :
                 if verbose:
                     print('cirurgia p1 alocada em outro dia', cirurgia)
+                if removeCirurgiaInviavel:
+                    desalocarCirurgia(solucao, cirurgia['id'])
                 return False
             # if  cirurgia['alocada'] == False:
             #     if verbose:
@@ -47,6 +53,9 @@ def viavel(solucao, S, T, D, verbose=False):
                 if cirurgiaCorrente['horaInicio'] - cirurgiaAnterior['horaFim'] < 3:
                     if verbose:
                         print(f'Solucao nao respeita criterio de higienizacao {cirurgiaCorrente["horaInicio"]} - { cirurgiaAnterior["horaFim"]}')
+                    
+                    if removeCirurgiaInviavel:
+                        desalocarCirurgia(solucao, cirurgiaCorrente['id'])
                     return False
 
     # Check if some room has more than one specialty in the same day
@@ -61,6 +70,8 @@ def viavel(solucao, S, T, D, verbose=False):
             if len(set(specialties)) > 1:
                 if verbose:
                     print(f"Room {s} has more than one specialty at day {d}. Check surgeries: {surgeries}.")
+                if removeCirurgiaInviavel:
+                    desalocarCirurgia(solucao, c)
                 return False
 
     # Check if some surgeon exceeds limit of 24/100 timesteps
@@ -102,6 +113,9 @@ def viavel(solucao, S, T, D, verbose=False):
                     if overlap(cirurgia1, cirurgia2):
                         if verbose:
                             print(f'cirurgias {c1} - {c2} do cirurgiao {cirurgiao} colidem')
+                        if removeCirurgiaInviavel:
+                            print(f'removendo {c1}')
+                            desalocarCirurgia(solucao, c1)
                         return False
                     
 
@@ -120,6 +134,8 @@ def viavel(solucao, S, T, D, verbose=False):
                     if overlap(cirurgia1, cirurgia2):
                         if verbose:
                             print(f'cirurgias {c1} - {c2} colidem')
+                        if removeCirurgiaInviavel:
+                            desalocarCirurgia(solucao, c1)
                         return False
 
     return True
