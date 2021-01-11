@@ -123,6 +123,7 @@ def getLocalSearchFunctions(solucao, config, coef, beta):
             {'f': buscaLocal.trocaP1PorD0, 'params': {'solucao': solucao}},
             {'f': buscaLocal.removeOciosidadeCirurgiao, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}},
             {'f': buscaLocal.antecipaPrioridadeMaisBaixa, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}},
+            {'f': buscaLocal.antecipaFOMaisBaixa, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}},
             {'f': buscaLocal.insereEmSalaDiaOcioso, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}}
         ]
 
@@ -138,6 +139,7 @@ def getLocalSearchFunctions(solucao, config, coef, beta):
         {'f': buscaLocal.desalocaNaoP1D0, 'params': {'solucao': solucao}},
         {'f': buscaLocal.removeOciosidadeCirurgiao, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}},
         {'f': buscaLocal.antecipaPrioridadeMaisBaixa, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}},
+        {'f': buscaLocal.antecipaFOMaisBaixa, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}},
         {'f': buscaLocal.insereEmSalaDiaOcioso, 'params': {'solucao': solucao, 'S': config['S'], 'T': config['T'], 'D': config['D']}}
     ]
 
@@ -153,7 +155,7 @@ def peteleco(solucao):
 
 
 def pathRelinking(best, solucoesElite, config):
-    print('\nPATH RELINKING\n')
+    # print('\nPATH RELINKING\n')
     # print(len(solucoesElite), ' utilizando solucoes elite')
 
     for i in range (0, 50):
@@ -168,13 +170,35 @@ def pathRelinking(best, solucoesElite, config):
             if iguais(guia[c], inicial[c]) == False:
                 alocarCirurgia(inicial, c, guia[c]['sala'], guia[c]['horaInicio'], guia[c]['dia'])
                 if viavel(inicial, config['S'], config['T'], config['D']) == True:
-                    print('VIAVEL PATH RELINKING')
-                    print(f'BEST: {FO2(best)} - corrente: {FO2(inicial)}')
+                    # print('gerou solucao viavel')
                     viaveis.append({'solucao':copy.deepcopy(inicial), 'fo': FO2(inicial) })
                     if FO2(inicial) < FO2(best):
+                        # print('MELHORA PATH RELINKING')
+                        # print(f'BEST: {FO2(best)} - corrente: {FO2(inicial)}')
                         best = copy.deepcopy(inicial)
                 else:
-                    desalocarCirurgia(inicial, c)
+                    # print('gerou solucao inviavel')
+                    v = False
+                    while v == False:
+                        v = viavel(inicial,  config['S'], config['T'], config['D'], verbose=False , removeCirurgiaInviavel=True)
+                    inicial = removeOciosidadeCirurgiao(inicial, guia, config)
+                    if FO2(inicial) < FO2(best):
+                        # print('MELHORA PATH RELINKING')
+                        # print(f'BEST: {FO2(best)} - corrente: {FO2(inicial)}')
+                        best = copy.deepcopy(inicial)
+                    # else:
+                    #     print('removeu ociosidade mas nao melhorou fo')
+        for i in range(0, 100):
+            s1 = buscaLocal.antecipaFOMaisBaixa({'solucao': inicial, 'S': config['S'], 'T': config['T'], 'D': config['D']})
+            if FO2(s1) < FO2(best):
+                best = copy.deepcopy(s1)
+                # print('MELHORA PATH RELINKING')
+                # print(f'BEST: {FO2(best)} - corrente: {FO2(inicial)}')
+            if FO2(s1) < FO2(inicial):
+                inicial = copy.deepcopy(s1)
+                    
+
+                
 
 
     # print(FO2(best))
@@ -218,35 +242,38 @@ def alocaCirurgiaDaSolucaoElite(solucao, solucaoElite, config):
                         alocarCirurgia(solucaoCpy, cElite, s, t, d)
                         if viavel(solucaoCpy, config['S'], config['T'], config['D'] ) == False:
                             desalocarCirurgia(solucaoCpy, cElite)
+                        
+
     
     return solucaoCpy
 
 def removeOciosidadeCirurgiao(solucao, solucaoElite, config):
     solucaoCpy = copy.deepcopy(solucao)
 
-    horasCirurgioesBest = getHorasPorCirurgiao(solucao)
-    horasCirurgioesSolucaoElite = getHorasPorCirurgiao(solucaoElite)
+    # horasCirurgioesBest = getHorasPorCirurgiao(solucao)
+    # horasCirurgioesSolucaoElite = getHorasPorCirurgiao(solucaoElite)
 
-    print('remove ociosidade')
-    for cirurgiao in horasCirurgioesSolucaoElite:
-        # if horasCirurgioesSolucaoElite[cirurgiao]['horasSemana'] > horasCirurgioesBest[cirurgiao]['horasSemana']:
-        print('cirurgiao', cirurgiao)
-        if True:
-            for c in solucaoCpy:
-                if solucaoCpy[c]['alocada'] == True:
-                    continue
-                if solucaoCpy[c]['cirurgiao'] == cirurgiao:
-                    for d in range(0, config['D']):
-                        for s in range(0, config['S']):
-                            for t in range(0, config['T'] - solucaoCpy[c]['duracao']):
-                                if solucaoCpy[c]['alocada'] == True:
-                                    continue
-                                alocarCirurgia(solucaoCpy, c, s, t, d)
-                                if viavel(solucaoCpy, config['S'], config['T'], config['D'] ) == False:
-                                    desalocarCirurgia(solucaoCpy, c)
-                                else:
-                                    print('conseguiu alocar cirurgia de cirurgiao ocioso')
-                                    print(f'Cirurgia {c} Cirurgiao {cirurgiao}')
+    # print('remove ociosidade')
+    # for cirurgiao in horasCirurgioesSolucaoElite:
+    #     # if horasCirurgioesSolucaoElite[cirurgiao]['horasSemana'] > horasCirurgioesBest[cirurgiao]['horasSemana']:
+    #     print('cirurgiao', cirurgiao)
+    #     if True:
+    #         for c in solucaoCpy:
+    #             if solucaoCpy[c]['alocada'] == True:
+    #                 continue
+    #             if solucaoCpy[c]['cirurgiao'] == cirurgiao:
+    for c in solucaoCpy:
+        for d in range(0, config['D']):
+            for s in range(0, config['S']):
+                for t in range(0, config['T'] - solucaoCpy[c]['duracao']):
+                    if solucaoCpy[c]['alocada'] == True:
+                        continue
+                    alocarCirurgia(solucaoCpy, c, s, t, d)
+                    if viavel(solucaoCpy, config['S'], config['T'], config['D'] ) == False:
+                        desalocarCirurgia(solucaoCpy, c)
+                    # else:
+                    #     print('conseguiu alocar cirurgia de cirurgiao ocioso')
+                        # print(f'Cirurgia {c} Cirurgiao {cirurgiao}')
 
     return solucaoCpy
 

@@ -1,0 +1,6 @@
+REPLICACOES: 5 - Instancia: instancias/i14.csv - S: 7
+FO Media: 23417.8 - tempo medio: 127.22830510139465
+FO Desvio: 4985.020176488757 - tempo desvio: 19.525028375657676
+FO Mediana: 20078.0 - tempo mediana: 125.1830084323883
+FO min: 19035 - tempo min: 95.48179459571838
+FO max: 30589 - tempo max: 151.38214826583862

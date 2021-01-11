@@ -1,0 +1,6 @@
+REPLICACOES: 5 - Instancia: instancias/i1.csv - S: 2
+FO Media: 260985.0 - tempo medio: 0.9791718482971191
+FO Desvio: 0.0 - tempo desvio: 0.020911289271742396
+FO Mediana: 260985.0 - tempo mediana: 0.9853920936584473
+FO min: 260985 - tempo min: 0.9425902366638184
+FO max: 260985 - tempo max: 1.0042486190795898

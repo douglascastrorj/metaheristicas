@@ -4,7 +4,7 @@ import numpy as np
 import math
 from utils import filterBy, _filter, ordenaCirurgias, getPenalizacao, mapToList, getHorasPorCirurgiao
 
-from fitness import viavel
+from fitness import viavel, FOCirurgiaIsolada
 
 # sobreposicao de horario cirurgiao
 # maximo horario cirurgiao
@@ -443,6 +443,44 @@ def antecipaPrioridadeMaisBaixa(params):
     c1 = random.choice(list(alocadasNaoP1.keys()))
 
     filterPrioridadeMaissBaixa = lambda cirurgia : cirurgia['alocada'] == True and cirurgia['prioridade'] != 1 and cirurgia['prioridade'] >= solucao[c1]['prioridade'] and cirurgia['especialidade'] == solucao[c1]['especialidade'] and cirurgia['dia'] < solucao[c1]['dia']
+    prioridadesMaisBaixa = _filter(solucao, filterPrioridadeMaissBaixa)
+
+    if len(prioridadesMaisBaixa) == 0:
+        return solucao
+
+    c2 = random.choice(list(prioridadesMaisBaixa.keys()))
+
+    solucao[c1]['horaInicio'] = solucaoAnterior[c2]['horaInicio']
+    solucao[c1]['horaFim'] = solucaoAnterior[c2]['horaInicio'] + solucaoAnterior[c1]['duracao']
+    solucao[c1]['dia'] = solucaoAnterior[c2]['dia']
+    solucao[c1]['sala'] = solucaoAnterior[c2]['sala']
+
+    solucao[c2]['horaInicio'] = solucaoAnterior[c1]['horaInicio']
+    solucao[c2]['horaFim'] = solucaoAnterior[c1]['horaInicio'] + solucaoAnterior[c2]['duracao']
+    solucao[c2]['dia'] = solucaoAnterior[c1]['dia']
+    solucao[c2]['sala'] = solucaoAnterior[c1]['sala']
+
+    if viavel(solucao, params['S'], params['T'], params['D'] ) == False:
+        return solucaoAnterior
+
+    return solucao
+
+def antecipaFOMaisBaixa(params):
+
+    # print('antecipa cirurgia mais baixa')
+    solucao = copy.deepcopy(params['solucao'])
+    solucaoAnterior = copy.deepcopy(params['solucao'])
+
+    filterAlocadasNaoP1 = lambda cirurgia : cirurgia['alocada'] == True and cirurgia['prioridade'] != 1
+    alocadasNaoP1 = _filter(solucao, filterAlocadasNaoP1)
+
+    if len(alocadasNaoP1) == 0:
+        return solucao
+
+    c1 = random.choice(list(alocadasNaoP1.keys()))
+
+    foc1 = FOCirurgiaIsolada(solucao[c1])
+    filterPrioridadeMaissBaixa = lambda cirurgia : cirurgia['alocada'] == True and cirurgia['prioridade'] != 1 and cirurgia['especialidade'] == solucao[c1]['especialidade'] and cirurgia['dia'] < solucao[c1]['dia'] and FOCirurgiaIsolada(cirurgia) < foc1
     prioridadesMaisBaixa = _filter(solucao, filterPrioridadeMaissBaixa)
 
     if len(prioridadesMaisBaixa) == 0:

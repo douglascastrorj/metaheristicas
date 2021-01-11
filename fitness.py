@@ -91,11 +91,19 @@ def viavel(solucao, S, T, D, verbose=False, removeCirurgiaInviavel=False):
             if(tempoDia > MAX_SLOTS_MEDICO_DIA):
                 if verbose:
                     print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_DIA} no dia {day}.')
+                if removeCirurgiaInviavel:
+                    filterF = lambda cirurgia : cirurgia['alocada'] == True and cirurgia['cirurgiao'] == cirurgiao
+                    cirurgiasSemana = _filter(solucao, filterF)
+                    desalocarCirurgia(solucao, list(cirurgiasSemana.keys())[0] )
                 return False
             
             if(tempoSemana > MAX_SLOTS_MEDICO_SEMANA):
                 if verbose:
                     print(f'Cirurgiao {cirurgiao} possui mais que {MAX_SLOTS_MEDICO_SEMANA}.')
+                if removeCirurgiaInviavel:
+                    filterF = lambda cirurgia : cirurgia['alocada'] == True and cirurgia['cirurgiao'] == cirurgiao
+                    cirurgiasSemana = _filter(solucao, filterF)
+                    desalocarCirurgia(solucao, list(cirurgiasSemana.keys())[0] )
                 return False
 
     # Check if some surgeon has overlapping surgeries
@@ -114,7 +122,7 @@ def viavel(solucao, S, T, D, verbose=False, removeCirurgiaInviavel=False):
                         if verbose:
                             print(f'cirurgias {c1} - {c2} do cirurgiao {cirurgiao} colidem')
                         if removeCirurgiaInviavel:
-                            print(f'removendo {c1}')
+                            # print(f'removendo {c1}')
                             desalocarCirurgia(solucao, c1)
                         return False
                     
@@ -238,3 +246,23 @@ def FO2(solucao):
         fo += ((wc + 7)**2)*epsilon + (epsilon*(wc + 9 -lpc)**2)*vc
  
     return fo
+
+def FOCirurgiaIsolada(cirurgia):
+    lp = { 1: 3, 2: 15, 3: 60, 4: 365 }
+
+    fo = 0
+    wc = cirurgia['diasEspera']
+    lpc = lp[cirurgia['prioridade']]
+    vc = int(wc > lpc)
+
+    if cirurgia['alocada']:
+        d = cirurgia['dia'] + 1
+        fo += 10*(wc + 2)**d
+        fo += ( (wc + 2 + d)**2 ) + ((wc + 2 + d - lpc)**2) * vc
+    
+    if cirurgia['alocada'] == False:
+        epsilon = getPenalizacao(cirurgia['prioridade'])
+        fo += ((wc + 7)**2)*epsilon + (epsilon*(wc + 9 -lpc)**2)*vc
+
+    return fo
+    
