@@ -25,13 +25,13 @@ instancias = [
     # { 'path': 'instancias/i5.csv',   'S': 6 },
     # { 'path': 'instancias/i6.csv',   'S': 8 },
     # { 'path': 'instancias/i7.csv',   'S': 3 },
-    # { 'path': 'instancias/i8.csv',   'S': 7 },
+    { 'path': 'instancias/i8.csv',   'S': 7 },
     # { 'path': 'instancias/i9.csv',   'S': 6 },
-    # { 'path': 'instancias/i10.csv',   'S': 10 },
+    { 'path': 'instancias/i10.csv',   'S': 10 },
     # { 'path': 'instancias/i11.csv',   'S': 15 },
-    { 'path': 'instancias/i12.csv',   'S': 3 },
-    { 'path': 'instancias/i13.csv',   'S': 4 },
-    { 'path': 'instancias/i14.csv',   'S': 7 }
+    # { 'path': 'instancias/i12.csv',   'S': 3 },
+    # { 'path': 'instancias/i13.csv',   'S': 4 },
+    # { 'path': 'instancias/i14.csv',   'S': 7 }
 ]
 
 
@@ -81,7 +81,8 @@ for instancia in instancias:
 
             # print('executando simulated anealing')
             best = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, pathrelinking=pathRelinking)
-
+            # history = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, pathrelinking=pathRelinking, history=True)
+            # plot.plotChart(history, instancia["path"].split("/")[1])
             end = time()
 
             fobest = FO2(best)

@@ -1,4 +1,5 @@
 from utils import _filter
+import matplotlib.pyplot as plt
 
 def exportGradeHorarios(solucao, config):
     csv = open('grade.csv', 'w')
@@ -36,3 +37,9 @@ def exportGradeHorarios(solucao, config):
 
     csv.close()
        
+def plotChart(history, title):
+    # print(history)
+    plt.plot([h['fo'] for h in history])
+    plt.ylabel('FO')
+    plt.suptitle(title)
+    plt.show()

@@ -12,7 +12,7 @@ import buscaLocal
 # SAmax: numero maximo de iteracoes Metropolis para cadaTemperatura
 # alpha: taxa de resfriamento 0 < alpha < 1
 # T0: temperatura inicial
-def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, _history = False, maxIterSemMelhoras = 500, verbose = False, maxPetelecos = 3, pathrelinking=False):
+def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, history = False, maxIterSemMelhoras = 500, verbose = False, maxPetelecos = 3, pathrelinking=False):
     
     #armazena as atualizacoes de best
     _history = []
@@ -83,7 +83,7 @@ def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, 
         T = T * alpha
         iterT = 0
         # print(T)
-    if _history == True:
+    if history == True:
         return _history
 
     if pathrelinking:
