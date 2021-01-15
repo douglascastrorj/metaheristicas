@@ -241,3 +241,4 @@ def popularVariaveis(S, cirurgias, cirurgiasAtendidas, tempoSalas, especialidade
             medicSlotMap[cirurgia['h']]['slotsSemana'] += cirurgia['tc']
 
             especialidadesDaSalaNoDia[s][d] = cirurgia['e']
+

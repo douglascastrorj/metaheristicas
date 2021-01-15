@@ -1,6 +1,8 @@
 import random 
 import copy
 from math import e
+import math
+import numpy as np
 
 from utils import readDataset, createMap, filterBy, getDistinctSpecialtyArr, xcstdToMap, filterBy, getHorasPorCirurgiao
 from guloso2 import gerarSolucaoInicial
@@ -12,7 +14,7 @@ import buscaLocal
 # SAmax: numero maximo de iteracoes Metropolis para cadaTemperatura
 # alpha: taxa de resfriamento 0 < alpha < 1
 # T0: temperatura inicial
-def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, history = False, maxIterSemMelhoras = 500, verbose = False, maxPetelecos = 3, pathrelinking=False):
+def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, history = False, maxIterSemMelhoras = 500, verbose = False, maxPetelecos = 3, pathrelinking=False, bestFO=None, ils=False):
     
     #armazena as atualizacoes de best
     _history = []
@@ -75,9 +77,13 @@ def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, 
                     break
         
         #parar algoritmo mais cedo
-        if iterSemMelhoras > maxIterSemMelhoras:
+        if iterSemMelhoras > maxIterSemMelhoras and bestFO != None:
             print(f'maximo de iteraçoes sem melhoras atingido {maxIterSemMelhoras}')
             break
+        
+        if bestFO != None:
+            if foBest <= bestFO * 1.1:
+                break
 
             # print(f'T {T}, iterT {iterT}')
         T = T * alpha
@@ -85,6 +91,9 @@ def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, 
         # print(T)
     if history == True:
         return _history
+
+    if ils:
+        return ILSPOSOtimizacao(bestSolution, config)
 
     if pathrelinking:
         sliceIndex = int( len(_history) * 0.5 )
@@ -144,11 +153,11 @@ def getLocalSearchFunctions(solucao, config, coef, beta):
     ]
 
 
-def peteleco(solucao):
-    print('\n\n PETELECO!! \n')
+def peteleco(solucao, percent=0.1):
+    # print('\n\n PETELECO!! \n')
     alocadas = filterBy(solucao,'alocada', True)
     s = copy.deepcopy(solucao) 
-    qtdARemover = random.randint(0, int(len(alocadas) * 0.35))
+    qtdARemover = random.randint(0, math.ceil(len(alocadas) * percent))
     for i in range(0, qtdARemover):
         s = buscaLocal.removeCirurgias({'solucao': s, 'alpha': random.random()})
     return s
@@ -292,3 +301,54 @@ def iguais(cirurgia1, cirurgia2):
     if cirurgia1['sala'] != cirurgia2['sala']:
         return False
     return True
+
+
+def getILSLocalSearch(solucao, config):
+    fs = getLocalSearchFunctions(solucao, config, 0, 0)
+    func = random.choice(fs)
+    return func['f'](func['params'])
+
+def melhorMelhoria(solucao, config, maxIter = 1000):
+    best = copy.deepcopy(solucao)
+
+    for i in range(0, 1000):
+        corrente = getILSLocalSearch(solucao, config)
+        isViavel = viavel(corrente, config['S'], config['T'], config['D'])
+        if isViavel:
+            # print(f'Corrente: {FO2(corrente) }')
+            if FO2(corrente) < FO2(best):
+                best = copy.deepcopy(corrente)
+    
+    return copy.deepcopy(best)
+
+
+def ILSPOSOtimizacao(solucao, config, maxIter=1000, maxIterSemMelhoras = 10):
+    # print('ILS RODANDO')
+
+    best = copy.deepcopy(solucao)
+
+    iterSemMelhoras = 0
+
+    s1 = melhorMelhoria(solucao, config)    
+    i = 0
+    while i < maxIter:
+        # print(f'ITERACAO: {i}')
+        if iterSemMelhoras > maxIterSemMelhoras:
+            break
+
+        iterSemMelhoras += 1
+        i += 1
+        isViavel = viavel(s1, config['S'], config['T'], config['D'])
+        if isViavel:
+            p = np.interp(i,[0,maxIter],[0.5, 0.1])
+            s_ = peteleco(s1, percent=p)
+            # print(f'FO PETELECO {FO2(s_)}')
+            s1_ = melhorMelhoria(s_, config)
+            # print(f'FO melhor Melhoria: {FO2(s1_)}')
+            if viavel(s1_, config['S'], config['T'], config['D']):
+                # print(f'FO BEST: {FO2(best)}')
+                if(FO2(s1_) < FO2(best)):
+                    iterSemMelhoras = 0
+                    best = copy.deepcopy(s1_)
+
+    return best
