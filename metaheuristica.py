@@ -81,8 +81,9 @@ def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, 
             print(f'maximo de iteraçoes sem melhoras atingido {maxIterSemMelhoras}')
             break
         
+        print(bestFO)
         if bestFO != None:
-            if foBest <= bestFO * 1.1:
+            if foBest <= bestFO * 1.03:
                 break
 
             # print(f'T {T}, iterT {iterT}')
@@ -93,7 +94,7 @@ def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, 
         return _history
 
     if ils:
-        return ILSPOSOtimizacao(bestSolution, config)
+        return ILSPOSOtimizacao(bestSolution, config, bestFO=bestFO)
 
     if pathrelinking:
         sliceIndex = int( len(_history) * 0.5 )
@@ -322,12 +323,16 @@ def melhorMelhoria(solucao, config, maxIter = 1000):
     return copy.deepcopy(best)
 
 
-def ILSPOSOtimizacao(solucao, config, maxIter=1000, maxIterSemMelhoras = 10):
+def ILSPOSOtimizacao(solucao, config, maxIter=1000, maxIterSemMelhoras = 10, bestFO=None):
     # print('ILS RODANDO')
 
     best = copy.deepcopy(solucao)
 
     iterSemMelhoras = 0
+
+    if bestFO != None:
+        if FO2(best) < bestFO * 1.03:
+            return best
 
     s1 = melhorMelhoria(solucao, config)    
     i = 0
@@ -335,6 +340,10 @@ def ILSPOSOtimizacao(solucao, config, maxIter=1000, maxIterSemMelhoras = 10):
         # print(f'ITERACAO: {i}')
         if iterSemMelhoras > maxIterSemMelhoras:
             break
+
+        if bestFO != None:
+            if FO2(best) < bestFO * 1.03:
+                return best
 
         iterSemMelhoras += 1
         i += 1

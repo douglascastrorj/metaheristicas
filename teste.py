@@ -14,17 +14,17 @@ T = 46
 D = 5
 
 
-REPLICACOES = 1
+REPLICACOES = 50
 
 
 instancias = [
-    { 'path': 'instancias/i1.csv',   'S': 2 },
+    # { 'path': 'instancias/i1.csv',   'S': 2 },
     # { 'path': 'instancias/i2.csv',   'S': 2 },
     { 'path': 'instancias/i3.csv',   'S': 2 },
     { 'path': 'instancias/i4.csv',   'S': 2 },
-    { 'path': 'instancias/i5.csv',   'S': 6 },
+    # { 'path': 'instancias/i5.csv',   'S': 6 },
     # { 'path': 'instancias/i6.csv',   'S': 8 },
-    { 'path': 'instancias/i7.csv',   'S': 3 },
+    # { 'path': 'instancias/i7.csv',   'S': 3 },
     # { 'path': 'instancias/i8.csv',   'S': 7 },
     # { 'path': 'instancias/i9.csv',   'S': 6 },
     # { 'path': 'instancias/i10.csv',   'S': 10 },
@@ -39,11 +39,11 @@ instancias = [
 # v = viavel(solucao, S, T, D, verbose=True)
 # print(f'Viavel: {v}')
 
-ilss = [ True]
+ilss = [ False, True ]
 for instancia in instancias:
     for ils in ilss:
 
-        # f = open(f'resultados/resultado_{instancia["path"].split("/")[1]}-ils-{ils}.txt', 'w')
+        f = open(f'resultados/times_resultado_{instancia["path"].split("/")[1]}-ils-{ils}-proximidade-3percent.txt', 'w')
             
         config = {
             'S': instancia['S'],
@@ -80,9 +80,9 @@ for instancia in instancias:
             # print(getHorasPorCirurgiao(solucao))
 
             # print('executando simulated anealing')
-            # best = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, pathrelinking=False, ils=ils)
-            history = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, pathrelinking=False, ils=ils, history=True)
-            plot.plotChart(history, instancia["path"].split("/")[1])
+            best = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, ils=True, bestFO=1518585)
+            # history = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, pathrelinking=False, ils=ils, history=True)
+            # plot.plotChart(history, instancia["path"].split("/")[1])
             end = time()
 
             fobest = FO2(best)
@@ -96,7 +96,7 @@ for instancia in instancias:
             print(f'\n\n(SOLUCAO INICIAL) FO = {FO2(solucao)}  - Viavel: {viavel(solucao, config["S"], config["T"], config["D"])} \n\n')
             print(f'(MELHOR SOLUCAO) FO = {FO2(best)}  - Viavel: {viavel(best, config["S"], config["T"],config["D"], verbose=False)} \n\n')
             
-            # f.write(f'{end - start}\n')
+            f.write(f'{end - start}\n')
             # plot.exportGradeHorarios(best, config)
 
             # print(getHorasPorCirurgiao(best))
