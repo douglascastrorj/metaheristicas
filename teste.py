@@ -20,8 +20,8 @@ REPLICACOES = 50
 instancias = [
     # { 'path': 'instancias/i1.csv',   'S': 2 },
     # { 'path': 'instancias/i2.csv',   'S': 2 },
-    { 'path': 'instancias/i3.csv',   'S': 2 },
-    { 'path': 'instancias/i4.csv',   'S': 2 },
+    { 'path': 'instancias/i3.csv',   'S': 2, 'bestFO': 384811},
+    # { 'path': 'instancias/i4.csv',   'S': 2, 'bestFO': 1518585},
     # { 'path': 'instancias/i5.csv',   'S': 6 },
     # { 'path': 'instancias/i6.csv',   'S': 8 },
     # { 'path': 'instancias/i7.csv',   'S': 3 },
@@ -80,7 +80,7 @@ for instancia in instancias:
             # print(getHorasPorCirurgiao(solucao))
 
             # print('executando simulated anealing')
-            best = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, ils=True, bestFO=1518585)
+            best = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, ils=True, bestFO=instancia["bestFO"])
             # history = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, pathrelinking=False, ils=ils, history=True)
             # plot.plotChart(history, instancia["path"].split("/")[1])
             end = time()
