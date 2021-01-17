@@ -20,16 +20,16 @@ REPLICACOES = 50
 instancias = [
     # { 'path': 'instancias/i1.csv',   'S': 2 },
     # { 'path': 'instancias/i2.csv',   'S': 2 },
-    { 'path': 'instancias/i3.csv',   'S': 2, 'bestFO': 384811},
+    # { 'path': 'instancias/i3.csv',   'S': 2, 'bestFO': 384811},
     # { 'path': 'instancias/i4.csv',   'S': 2, 'bestFO': 1518585},
     # { 'path': 'instancias/i5.csv',   'S': 6 },
     # { 'path': 'instancias/i6.csv',   'S': 8 },
-    # { 'path': 'instancias/i7.csv',   'S': 3 },
+    { 'path': 'instancias/i7.csv',   'S': 3, 'bestFO': 13814},
     # { 'path': 'instancias/i8.csv',   'S': 7 },
     # { 'path': 'instancias/i9.csv',   'S': 6 },
     # { 'path': 'instancias/i10.csv',   'S': 10 },
     # { 'path': 'instancias/i11.csv',   'S': 15 },
-    # { 'path': 'instancias/i12.csv',   'S': 3 },
+    { 'path': 'instancias/i12.csv',   'S': 3, 'bestFO': 25957 },
     # { 'path': 'instancias/i13.csv',   'S': 4 },
     # { 'path': 'instancias/i14.csv',   'S': 7 }
 ]
@@ -39,11 +39,11 @@ instancias = [
 # v = viavel(solucao, S, T, D, verbose=True)
 # print(f'Viavel: {v}')
 
-ilss = [ False, True ]
+ilss = [ False ]
 for instancia in instancias:
     for ils in ilss:
 
-        f = open(f'resultados/times_resultado_{instancia["path"].split("/")[1]}-ils-{ils}-proximidade-3percent.txt', 'w')
+        f = open(f'resultados/resultado_times_{instancia["path"].split("/")[1]}-ils-{ils}-proximidade-10percent.txt', 'w')
             
         config = {
             'S': instancia['S'],
@@ -59,6 +59,8 @@ for instancia in instancias:
         FOS = []
         times = []
         for i in range(0, REPLICACOES):
+
+            print(f'REPLICACAO: {i} - Instancia: {instancia["path"]} - S: {instancia["S"]}')
 
             start = time()
             # print('gerando solucao inicial')
@@ -80,7 +82,7 @@ for instancia in instancias:
             # print(getHorasPorCirurgiao(solucao))
 
             # print('executando simulated anealing')
-            best = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, ils=True, bestFO=instancia["bestFO"])
+            best = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, ils=ils, bestFO=instancia["bestFO"])
             # history = simulatedAnealing(solucao, config, FO2, SAmax=100, T0=1000, alpha=0.6, verbose=False, maxPetelecos=0, pathrelinking=False, ils=ils, history=True)
             # plot.plotChart(history, instancia["path"].split("/")[1])
             end = time()
@@ -92,7 +94,6 @@ for instancia in instancias:
             
 
             # print(best)
-            print(f'REPLICACAO: {i} - Instancia: {instancia["path"]} - S: {instancia["S"]}')
             print(f'\n\n(SOLUCAO INICIAL) FO = {FO2(solucao)}  - Viavel: {viavel(solucao, config["S"], config["T"], config["D"])} \n\n')
             print(f'(MELHOR SOLUCAO) FO = {FO2(best)}  - Viavel: {viavel(best, config["S"], config["T"],config["D"], verbose=False)} \n\n')
             
@@ -101,11 +102,11 @@ for instancia in instancias:
 
             # print(getHorasPorCirurgiao(best))
 
-        print(f'FO Media: {np.array(FOS).mean()} - tempo medio: {np.array(times).mean()}')
-        print(f'FO Desvio: {np.array(FOS).std()} - tempo desvio: {np.array(times).std()}')
-        print(f'FO Mediana: {np.median(FOS)} - tempo mediana: {np.median(times)}')
-        print(f'FO min: {np.array(FOS).min()} - tempo min: {np.array(times).min()}')
-        print(f'FO max: {np.array(FOS).max()} - tempo max: {np.array(times).max()}')
+        # print(f'FO Media: {np.array(FOS).mean()} - tempo medio: {np.array(times).mean()}')
+        # print(f'FO Desvio: {np.array(FOS).std()} - tempo desvio: {np.array(times).std()}')
+        # print(f'FO Mediana: {np.median(FOS)} - tempo mediana: {np.median(times)}')
+        # print(f'FO min: {np.array(FOS).min()} - tempo min: {np.array(times).min()}')
+        # print(f'FO max: {np.array(FOS).max()} - tempo max: {np.array(times).max()}')
 
         # f.write(f'REPLICACOES: {REPLICACOES} - Instancia: {instancia["path"]} - S: {instancia["S"]}\n')
         # f.write(f'FO Media: {np.array(FOS).mean()} - tempo medio: {np.array(times).mean()}\n')
@@ -114,4 +115,4 @@ for instancia in instancias:
         # f.write(f'FO min: {np.array(FOS).min()} - tempo min: {np.array(times).min()}\n')
         # f.write(f'FO max: {np.array(FOS).max()} - tempo max: {np.array(times).max()}\n')
             
-        # f.close()
+        f.close()

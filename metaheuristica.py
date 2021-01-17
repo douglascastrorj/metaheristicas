@@ -81,9 +81,9 @@ def simulatedAnealing(solucaoInicial, config, FO, T0=100, SAmax=100, alpha=0.5, 
             print(f'maximo de iteraçoes sem melhoras atingido {maxIterSemMelhoras}')
             break
         
-        print(bestFO)
+        # print(bestFO)
         if bestFO != None:
-            if foBest <= bestFO * 1.03:
+            if foBest <= bestFO * 1.1:
                 break
 
             # print(f'T {T}, iterT {iterT}')
@@ -331,7 +331,7 @@ def ILSPOSOtimizacao(solucao, config, maxIter=1000, maxIterSemMelhoras = 10, bes
     iterSemMelhoras = 0
 
     if bestFO != None:
-        if FO2(best) < bestFO * 1.03:
+        if FO2(best) < bestFO * 1.1:
             return best
 
     s1 = melhorMelhoria(solucao, config)    
@@ -342,7 +342,7 @@ def ILSPOSOtimizacao(solucao, config, maxIter=1000, maxIterSemMelhoras = 10, bes
             break
 
         if bestFO != None:
-            if FO2(best) < bestFO * 1.03:
+            if FO2(best) < bestFO * 1.1:
                 return best
 
         iterSemMelhoras += 1
